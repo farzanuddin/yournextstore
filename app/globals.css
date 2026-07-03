@@ -157,6 +157,25 @@
 	display: none !important;
 }
 
+/* Save button refinements */
+.FIE_topbar-save-wrapper .SfxButton-root {
+	border-radius: 100px !important;
+}
+
+.FIE_save-resize-wrapper {
+	display: none !important;
+}
+
+.FIE_save-modal .SfxModalActions-root .SfxButton-root {
+	border-radius: 100px !important;
+}
+
+/* Hide format dropdown and quality slider in save modal */
+.FIE_save-extension-selector,
+.FIE_save-quality-wrapper {
+	display: none !important;
+}
+
 /* Center the tools bar items */
 .FIE_tools-items {
 	display: flex !important;

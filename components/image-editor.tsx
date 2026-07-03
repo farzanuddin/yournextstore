@@ -22,6 +22,18 @@ export function ImageEditor({ imageUrl, onClose }: ImageEditorProps) {
 					savingPixelRatio={4}
 					previewPixelRatio={window.devicePixelRatio || 1}
 					tabsIds={["Adjust", "Finetune", "Filters", "Annotate"]}
+					avoidChangesNotSavedAlertOnLeave={true}
+					defaultSavedImageType="webp"
+					defaultSavedImageQuality={1}
+					theme={{
+						palette: {
+							"accent-primary": "#000",
+							"accent-primary-active": "#000",
+                            "accent-stateless" : "#000",
+                            "accent-primary-hover": "#333",
+							"bg-primary-active": "#FAFAFA",
+						},
+					}}
 					onSave={(editedImageObject) => {
 						if (editedImageObject.imageBase64) {
 							const link = document.createElement("a");
