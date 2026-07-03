@@ -1,19 +1,10 @@
 import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AddToCartButton } from "@/app/product/[slug]/add-to-cart-button";
 import { MediaGallery } from "@/app/product/[slug]/media-gallery";
 import { ProductFeatures } from "@/app/product/[slug]/product-features";
 import { RelatedProducts } from "@/app/product/[slug]/related-products";
-import {
-	Breadcrumb,
-	BreadcrumbItem,
-	BreadcrumbLink,
-	BreadcrumbList,
-	BreadcrumbPage,
-	BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { EditImageButton } from "@/components/image-editor";
 import { commerce } from "@/lib/commerce";
 
@@ -74,35 +65,6 @@ const ProductDetails = async ({ params }: { params: Promise<{ slug: string }> })
 
 	return (
 		<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-			<Breadcrumb className="mb-6">
-				<BreadcrumbList>
-					<BreadcrumbItem>
-						<BreadcrumbLink asChild>
-							<Link href="/">Home</Link>
-						</BreadcrumbLink>
-					</BreadcrumbItem>
-					<BreadcrumbSeparator />
-					<BreadcrumbItem>
-						<BreadcrumbLink asChild>
-							<Link href="/products">Products</Link>
-						</BreadcrumbLink>
-					</BreadcrumbItem>
-					{product.category && (
-						<>
-							<BreadcrumbSeparator />
-							<BreadcrumbItem>
-								<BreadcrumbLink asChild>
-									<Link href={`/category/${product.category.slug}`}>{product.category.name}</Link>
-								</BreadcrumbLink>
-							</BreadcrumbItem>
-						</>
-					)}
-					<BreadcrumbSeparator />
-					<BreadcrumbItem>
-						<BreadcrumbPage>{product.name}</BreadcrumbPage>
-					</BreadcrumbItem>
-				</BreadcrumbList>
-			</Breadcrumb>
 			<div className="lg:grid lg:grid-cols-2 lg:gap-16">
 				{/* Left: Image Gallery (sticky on desktop) */}
 				<div className="relative">
@@ -130,16 +92,6 @@ const ProductDetails = async ({ params }: { params: Promise<{ slug: string }> })
 					/>
 				</div>
 			</div>
-
-			{/* Full description */}
-			{product.summary && (
-				<section className="mt-16 border-t border-border pt-12">
-					<h2 className="mb-6 text-2xl font-medium tracking-tight">Product details</h2>
-					<div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
-						<p>{product.summary}</p>
-					</div>
-				</section>
-			)}
 
 			{/* Features Section */}
 			<ProductFeatures />

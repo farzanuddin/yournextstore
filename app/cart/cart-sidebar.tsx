@@ -17,6 +17,38 @@ import { CURRENCY, LOCALE } from "@/lib/constants";
 import { formatMoney } from "@/lib/money";
 import { cn } from "@/lib/utils";
 
+const FREE_SHIPPING_THRESHOLD = 10000n; // $100.00 in minor units
+
+function FreeShippingIndicator({ subtotal }: { subtotal: bigint }) {
+	const remaining = FREE_SHIPPING_THRESHOLD - subtotal;
+	const progress = subtotal > FREE_SHIPPING_THRESHOLD ? 100 : Number((subtotal * 100n) / FREE_SHIPPING_THRESHOLD);
+
+	if (remaining <= 0n) {
+		return (
+			<div className="px-4 pb-2">
+				<p className="text-xs font-medium">🎉 You qualify for free shipping!</p>
+				<div className="mt-1.5 h-1.5 w-full rounded-full bg-secondary">
+					<div className="h-full rounded-full bg-foreground transition-all" style={{ width: "100%" }} />
+				</div>
+			</div>
+		);
+	}
+
+	return (
+		<div className="px-4 pb-2">
+			<p className="text-xs text-muted-foreground">
+				Add {formatMoney({ amount: remaining, currency: CURRENCY, locale: LOCALE })} more for free shipping
+			</p>
+			<div className="mt-1.5 h-1.5 w-full rounded-full bg-secondary">
+				<div
+					className="h-full rounded-full bg-foreground transition-all"
+					style={{ width: `${progress}%` }}
+				/>
+			</div>
+		</div>
+	);
+}
+
 export function CartSidebar() {
 	const { isOpen, closeCart, items, itemCount, subtotal, isMutating } = useCart();
 
@@ -52,7 +84,7 @@ export function CartSidebar() {
 					</div>
 				) : (
 					<>
-						<ScrollArea className="flex-1 px-4">
+						<ScrollArea className="flex-1 min-h-0 px-4">
 							<div className="divide-y divide-border">
 								{items.map((item) => (
 									<CartItem key={item.productVariant.id} item={item} />
@@ -60,7 +92,11 @@ export function CartSidebar() {
 							</div>
 						</ScrollArea>
 
-						<SheetFooter className="border-t border-border pt-4 mt-auto">
+						<div className="shrink-0">
+							<FreeShippingIndicator subtotal={subtotal} />
+						</div>
+
+						<SheetFooter className="shrink-0 border-t border-border pt-4">
 							<div className="w-full space-y-4">
 								<div className="flex items-center justify-between text-base">
 									<span className="font-medium">Subtotal</span>

@@ -90,11 +90,8 @@ export function AddToCartButton({
 	const buttonText = useMemo(() => {
 		if (!selectedVariant) return "Select options";
 		if (isOutOfStock) return "Out of stock";
-		if (totalPrice) {
-			return `Add to Cart — ${formatMoney({ amount: totalPrice, currency: CURRENCY, locale: LOCALE })}`;
-		}
 		return "Add to Cart";
-	}, [selectedVariant, isOutOfStock, totalPrice]);
+	}, [selectedVariant, isOutOfStock]);
 
 	// Headline price. For the selected variant we show its own price (and the struck-through
 	// list price when it's on sale). Before a variant is picked we fall back to a range.
