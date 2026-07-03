@@ -149,12 +149,16 @@ export async function fetchProducts(params?: {
 		url += `&categoryId=${categoryId}`;
 	}
 
-	const products = await fetchJSON<FakeProduct[]>(url);
-
-	return {
-		data: products.map(mapProduct),
-		meta: { total: 200, limit, offset },
-	};
+	try {
+		const products = await fetchJSON<FakeProduct[]>(url);
+		return {
+			data: products.map(mapProduct),
+			meta: { total: 200, limit, offset },
+		};
+	} catch {
+		console.error("Failed to fetch products from Fake Store API");
+		return { data: [], meta: { total: 0, limit, offset } };
+	}
 }
 
 export async function fetchProduct(idOrSlug: string): Promise<CommerceProduct | null> {
@@ -175,23 +179,31 @@ export async function fetchProduct(idOrSlug: string): Promise<CommerceProduct | 
 }
 
 export async function fetchCategories(): Promise<{ data: CommerceCategory[] }> {
-	const categories = await fetchJSON<FakeCategory[]>(`${FAKE_STORE_BASE}/categories`);
-	return {
-		data: categories.map(mapCategory),
-	};
+	try {
+		const categories = await fetchJSON<FakeCategory[]>(`${FAKE_STORE_BASE}/categories`);
+		return { data: categories.map(mapCategory) };
+	} catch {
+		console.error("Failed to fetch categories from Fake Store API");
+		return { data: [] };
+	}
 }
 
 export async function fetchCollections(): Promise<{ data: CommerceCollection[] }> {
-	const categories = await fetchJSON<FakeCategory[]>(`${FAKE_STORE_BASE}/categories`);
-	return {
-		data: categories.map((fc) => ({
-			id: String(fc.id),
-			name: fc.name,
-			slug: fc.slug,
-			image: fc.image,
-			description: null,
-		})),
-	};
+	try {
+		const categories = await fetchJSON<FakeCategory[]>(`${FAKE_STORE_BASE}/categories`);
+		return {
+			data: categories.map((fc) => ({
+				id: String(fc.id),
+				name: fc.name,
+				slug: fc.slug,
+				image: fc.image,
+				description: null,
+			})),
+		};
+	} catch {
+		console.error("Failed to fetch collections from Fake Store API");
+		return { data: [] };
+	}
 }
 
 export async function fetchCategory(idOrSlug: string): Promise<CommerceCategory | null> {

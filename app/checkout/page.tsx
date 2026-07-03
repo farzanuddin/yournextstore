@@ -1,6 +1,7 @@
 "use client";
 
 import { CreditCard, Loader2, Lock, ShieldCheck, ShoppingBag } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -294,7 +295,8 @@ export default function CheckoutPage() {
 						<h2 className="text-lg font-medium">Payment</h2>
 						{cardError && !cardNumber && !cardExpiry && !cardCvc && <p className="text-sm text-red-500">{cardError}</p>}
 
-						<div className="space-y-3">
+						<fieldset className="border-0 p-0 m-0 space-y-3">
+							<legend className="sr-only">Select payment method</legend>
 							{/* Card Option */}
 							<label
 								className={`flex items-center gap-3 rounded-lg border p-4 cursor-pointer transition-colors ${paymentMethod === "card" ? "border-foreground bg-secondary/30" : "border-border hover:border-muted-foreground/30"}`}
@@ -308,8 +310,8 @@ export default function CheckoutPage() {
 								/>
 								<span className="text-sm font-medium">Card</span>
 								<span className="ml-auto flex gap-1.5 items-center">
-								<img src="/visa.svg" alt="Visa" className="h-5" />
-								<img src="/mc.svg" alt="Mastercard" className="h-5" />
+								<Image src="/visa.svg" alt="Visa" width={20} height={14} className="h-5 w-auto" />
+								<Image src="/mc.svg" alt="Mastercard" width={20} height={14} className="h-5 w-auto" />
 								</span>
 							</label>
 
@@ -326,8 +328,8 @@ export default function CheckoutPage() {
 												maxLength={19}
 											/>
 											<div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-1 items-center">
-									<img src="/visa.svg" alt="Visa" className={`h-4 ${cardNumber.replace(/\s/g, "").startsWith("4") ? "opacity-100" : "opacity-30"}`} />
-									<img src="/mc.svg" alt="Mastercard" className={`h-4 ${/^5[1-5]/.test(cardNumber.replace(/\s/g, "")) ? "opacity-100" : "opacity-30"}`} />
+									<Image src="/visa.svg" alt="Visa" width={16} height={11} className={`h-4 w-auto ${cardNumber.replace(/\s/g, "").startsWith("4") ? "opacity-100" : "opacity-30"}`} />
+									<Image src="/mc.svg" alt="Mastercard" width={16} height={11} className={`h-4 w-auto ${/^5[1-5]/.test(cardNumber.replace(/\s/g, "")) ? "opacity-100" : "opacity-30"}`} />
 											</div>
 										</div>
 										{cardError && <p className="text-sm text-red-500 mt-1">{cardError}</p>}
@@ -369,7 +371,7 @@ export default function CheckoutPage() {
 									className="h-4 w-4 accent-foreground"
 								/>
 								<span className="text-sm font-medium">Google Pay</span>
-								<img src="/gpay.svg" alt="Google Pay" className="ml-auto h-5" />
+								<Image src="/gpay.svg" alt="Google Pay" width={20} height={14} className="ml-auto h-5 w-auto" />
 							</label>
 
 							{paymentMethod === "google-pay" && (
@@ -380,7 +382,7 @@ export default function CheckoutPage() {
 									</div>
 								</div>
 							)}
-						</div>
+						</fieldset>
 					</div>
 
 					<Button type="submit" className="w-full h-14 text-base font-medium rounded-full" disabled={isPlacing}>
@@ -415,12 +417,14 @@ export default function CheckoutPage() {
 						<div className="divide-y divide-border">
 							{items.map((item) => (
 								<div key={item.productVariant.id} className="flex gap-4 py-4 first:pt-0">
-									<div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-secondary">
+									<div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-secondary relative">
 										{item.productVariant.images[0] && (
-											<img
+											<Image
 												src={item.productVariant.images[0]}
 												alt={item.productVariant.product.name}
-												className="h-full w-full object-cover"
+												fill
+												sizes="64px"
+												className="object-cover"
 											/>
 										)}
 									</div>

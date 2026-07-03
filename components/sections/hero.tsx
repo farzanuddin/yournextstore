@@ -1,4 +1,5 @@
 import { ArrowRightIcon } from "lucide-react";
+import Image from "next/image";
 import { YnsLink } from "../yns-link";
 
 export function Hero() {
@@ -6,8 +7,8 @@ export function Hero() {
 		<section className="py-4 sm:py-6 lg:py-8">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				{/* Mobile: banner with text overlay */}
-				<div className="lg:hidden relative w-full rounded-2xl overflow-hidden aspect-[4/3]">
-					<img src="/hero.avif" alt="Hero" className="absolute inset-0 w-full h-full object-cover" />
+				<div className="lg:hidden relative w-full rounded-2xl overflow-hidden aspect-4/3">
+					<Image src="/hero.avif" alt="Curated lifestyle products collection" fill className="object-cover" priority sizes="100vw" />
 					<div className="absolute inset-0 flex items-center p-6">
 						<div>
 							<h1 className="text-xl font-semibold tracking-tight text-black leading-tight">
@@ -31,11 +32,14 @@ export function Hero() {
 				</div>
 
 				{/* Desktop: banner with text overlay */}
-				<div className="hidden lg:block relative w-full mx-auto aspect-[2.5/1] lg:aspect-[2/1] rounded-3xl overflow-hidden">
-					<img
+				<div className="hidden lg:block relative w-full mx-auto aspect-2.5/1 lg:aspect-2/1 rounded-3xl overflow-hidden">
+					<Image
 						src="/hero.avif"
-						alt="Hero"
-						className="absolute inset-0 w-full h-full object-cover"
+						alt="Curated lifestyle products collection"
+						fill
+						className="object-cover"
+						priority
+						sizes="(max-width: 1024px) 100vw, 90vw"
 					/>
 					<div className="absolute inset-0 flex items-center p-8 sm:p-12 lg:p-16">
 						<div className="max-w-xl">

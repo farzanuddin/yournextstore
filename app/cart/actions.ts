@@ -5,12 +5,16 @@ import { commerce } from "@/lib/commerce";
 import { getCartCookieJson, setCartCookie } from "@/lib/cookies";
 
 export async function addToCart(variantId: string, quantity = 1) {
+	if (!variantId || typeof variantId !== "string" || variantId.length > 100) {
+		return { success: false, cart: null, error: "Invalid variant" };
+	}
+	const safeQuantity = Math.max(1, Math.min(Math.floor(Number(quantity) || 1), 99));
 	const cartCookie = await getCartCookieJson();
 
 	const cart = await commerce.cartUpsert({
 		cartId: cartCookie?.id,
 		variantId,
-		quantity,
+		quantity: safeQuantity,
 	});
 
 	if (!cart) {
@@ -27,6 +31,9 @@ export async function addToCart(variantId: string, quantity = 1) {
 
 // Set absolute quantity for a cart item
 export async function setCartQuantity(variantId: string, quantity: number) {
+	if (!variantId || typeof variantId !== "string" || variantId.length > 100) {
+		return { success: false, cart: null };
+	}
 	const cartCookie = await getCartCookieJson();
 
 	if (!cartCookie?.id) {
@@ -37,7 +44,7 @@ export async function setCartQuantity(variantId: string, quantity: number) {
 		const cart = await commerce.cartUpsert({
 			cartId: cartCookie.id,
 			variantId,
-			quantity: Math.max(quantity, 0),
+			quantity: Math.max(0, Math.min(Math.floor(Number(quantity) || 0), 99)),
 			mode: "set",
 		});
 		return { success: true, cart };

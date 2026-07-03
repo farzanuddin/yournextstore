@@ -2,6 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { addToCart } from "@/app/cart/actions";
 import { useCart } from "@/app/cart/cart-context";
@@ -56,7 +57,7 @@ export function AddToCartButton({
 }: AddToCartButtonProps) {
 	const searchParams = useSearchParams();
 	const [quantity, setQuantity] = useState(1);
-	const { items, openCart, dispatch, startMutation } = useCart();
+	const { items, openCart, dispatch, startMutation, isMutating } = useCart();
 
 	const selectedVariant = useMemo(() => {
 		if (variants.length === 1) {
@@ -237,10 +238,17 @@ export function AddToCartButton({
 			<form onSubmit={handleSubmit}>
 				<Button
 					type="submit"
-					disabled={!selectedVariant || isOutOfStock}
+					disabled={!selectedVariant || isOutOfStock || isMutating}
 					className="w-full h-14 rounded-full text-base font-medium tracking-wide"
 				>
-					{buttonText}
+					{isMutating ? (
+						<>
+							<Loader2 className="h-4 w-4 animate-spin" />
+							Adding…
+						</>
+					) : (
+						buttonText
+					)}
 				</Button>
 			</form>
 

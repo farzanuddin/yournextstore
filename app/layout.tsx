@@ -31,58 +31,65 @@ const geistMono = Geist_Mono({
 async function getStoreMetadata(): Promise<Metadata> {
 	"use cache";
 	cacheLife("hours");
-	const me = await meGetCached();
-	const storeName = me.store.name || "Your Next Store";
-	const storeDescription = me.store.settings?.storeDescription || "Your next e-commerce store";
-	const faviconUrl = getStoreFaviconUrl(me.store.settings) ?? "/logo.svg";
-	const storeLogo =
-		typeof me.store.settings?.logo === "string" ? me.store.settings.logo : me.store.settings?.logo?.imageUrl;
-	const ogImage = me.store.settings?.ogimage || storeLogo || "/logo.svg";
+	try {
+		const me = await meGetCached();
+		const storeName = me.store.name || "Your Next Store";
+		const storeDescription = me.store.settings?.storeDescription || "Your next e-commerce store";
+		const faviconUrl = getStoreFaviconUrl(me.store.settings) ?? "/logo.svg";
+		const storeLogo =
+			typeof me.store.settings?.logo === "string" ? me.store.settings.logo : me.store.settings?.logo?.imageUrl;
+		const ogImage = me.store.settings?.ogimage || storeLogo || "/logo.svg";
 
-	return {
-		title: {
-			default: storeName,
-			template: `%s — ${storeName}`,
-		},
-		description: storeDescription,
-		applicationName: storeName,
-		alternates: {
-			canonical: "/",
-		},
-		openGraph: {
-			type: "website",
-			siteName: storeName,
-			title: storeName,
+		return {
+			title: {
+				default: storeName,
+				template: `%s — ${storeName}`,
+			},
 			description: storeDescription,
-			url: "/",
-			images: [{ url: ogImage, alt: storeName }],
-		},
-		twitter: {
-			card: "summary_large_image",
-			title: storeName,
-			description: storeDescription,
-			images: [ogImage],
-		},
-		robots: {
-			index: true,
-			follow: true,
-			googleBot: {
+			applicationName: storeName,
+			alternates: {
+				canonical: "/",
+			},
+			openGraph: {
+				type: "website",
+				siteName: storeName,
+				title: storeName,
+				description: storeDescription,
+				url: "/",
+				images: [{ url: ogImage, alt: storeName }],
+			},
+			twitter: {
+				card: "summary_large_image",
+				title: storeName,
+				description: storeDescription,
+				images: [ogImage],
+			},
+			robots: {
 				index: true,
 				follow: true,
-				"max-image-preview": "large",
-				"max-snippet": -1,
-				"max-video-preview": -1,
+				googleBot: {
+					index: true,
+					follow: true,
+					"max-image-preview": "large",
+					"max-snippet": -1,
+					"max-video-preview": -1,
+				},
 			},
-		},
-		icons: {
-			icon: [
-				{ url: faviconUrl, sizes: "any", type: "image/svg+xml" },
-				{ url: faviconUrl, sizes: "192x192", type: "image/png" },
-			],
-			apple: [{ url: faviconUrl, sizes: "180x180" }],
-			shortcut: faviconUrl,
-		},
-	};
+			icons: {
+				icon: [
+					{ url: faviconUrl, sizes: "any", type: "image/svg+xml" },
+					{ url: faviconUrl, sizes: "192x192", type: "image/png" },
+				],
+				apple: [{ url: faviconUrl, sizes: "180x180" }],
+				shortcut: faviconUrl,
+			},
+		};
+	} catch {
+		return {
+			title: { default: "Your Next Store", template: "%s — Your Next Store" },
+			description: "Your next e-commerce store",
+		};
+	}
 }
 
 export async function generateMetadata(): Promise<Metadata> {

@@ -61,6 +61,7 @@ export function EditImageButton({ imageUrl }: EditImageButtonProps) {
 			<button
 				type="button"
 				onClick={() => setEditorOpen(true)}
+				aria-label="Edit product image"
 				className="absolute top-3 left-3 z-10 rounded-full bg-foreground/80 px-3 py-1.5 text-xs font-medium text-background backdrop-blur-sm transition-colors hover:bg-foreground"
 			>
 				Edit
