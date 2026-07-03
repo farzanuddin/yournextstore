@@ -10,7 +10,7 @@ import { QuantitySelector } from "@/app/product/[slug]/quantity-selector";
 import { TrustBadges } from "@/app/product/[slug]/trust-badges";
 import { VariantSelector } from "@/app/product/[slug]/variant-selector";
 import { Button } from "@/components/ui/button";
-import { CURRENCY, LOCALE } from "@/lib/constants";
+import { CURRENCY, LOCALE, LOW_STOCK_THRESHOLD } from "@/lib/constants";
 import { formatMoney } from "@/lib/money";
 import { cn } from "@/lib/utils";
 
@@ -47,8 +47,6 @@ type AddToCartButtonProps = {
 	};
 	summary?: string | null;
 };
-
-const LOW_STOCK_THRESHOLD = 5;
 
 export function AddToCartButton({
 	variants,

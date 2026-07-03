@@ -14,10 +14,8 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from "@/components/ui/sheet";
-import { CURRENCY, LOCALE } from "@/lib/constants";
+import { CURRENCY, FREE_SHIPPING_THRESHOLD, LOCALE } from "@/lib/constants";
 import { formatMoney } from "@/lib/money";
-
-const FREE_SHIPPING_THRESHOLD = 10000n; // $100.00 in minor units
 
 function FreeShippingIndicator({ subtotal }: { subtotal: bigint }) {
 	const remaining = FREE_SHIPPING_THRESHOLD - subtotal;

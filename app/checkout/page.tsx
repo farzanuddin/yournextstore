@@ -9,11 +9,8 @@ import { useCart } from "@/app/cart/cart-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CURRENCY, LOCALE } from "@/lib/constants";
+import { CURRENCY, FREE_SHIPPING_THRESHOLD, LOCALE, SHIPPING_COST } from "@/lib/constants";
 import { formatMoney } from "@/lib/money";
-
-const FREE_SHIPPING_THRESHOLD = 10000n; // $100.00 in minor units
-const SHIPPING_COST = 1500n; // $15.00 in minor units
 
 type FormData = {
 	email: string;
