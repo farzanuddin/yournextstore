@@ -10,11 +10,8 @@
 		"ignoreUnknown": false,
 		"includes": [
 			"**",
-			"!**/.agents",
-			"!**/.claude",
 			"!**/package.json",
 			"!**/bun.lockb",
-			"!**/vercel.json",
 			"!**/components/ui",
 			"!**/hooks/use-mobile.ts",
 			"!**/*.css"
