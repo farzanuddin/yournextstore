@@ -35,7 +35,8 @@ export async function ProductGrid({
 	"use cache";
 	cacheLife("minutes");
 
-	const displayProducts = products ?? (await commerce.productBrowse({ active: true, limit })).data;
+	const displayProducts =
+		products ?? (await commerce.productBrowse({ active: true, limit }).catch(() => ({ data: [] }))).data;
 
 	return (
 		<section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">

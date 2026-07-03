@@ -50,7 +50,7 @@ async function FooterCollections() {
 	"use cache";
 	cacheLife("hours");
 
-	const collections = await commerce.collectionBrowse({ limit: 5 });
+	const collections = await commerce.collectionBrowse({ limit: 5 }).catch(() => ({ data: [] }));
 
 	if (collections.data.length === 0) {
 		return null;
@@ -80,7 +80,7 @@ async function FooterLegalPages() {
 	"use cache";
 	cacheLife("hours");
 
-	const pages = await commerce.legalPageBrowse();
+	const pages = await commerce.legalPageBrowse().catch(() => ({ data: [] }));
 
 	if (pages.data.length === 0) {
 		return null;

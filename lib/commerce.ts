@@ -1,3 +1,4 @@
+import type { APIMeGetResult } from "commerce-kit";
 import { Commerce } from "commerce-kit";
 
 // Override the API host (defaults to yns.store / yns.cx by key prefix). Useful for
@@ -9,11 +10,57 @@ export const commerce = Commerce({
 	endpoint,
 });
 
+const DEFAULT_ME = {
+	store: {
+		name: "Your Next Store",
+		subdomain: "",
+		settings: {
+			enabledTools: {
+				blog: false,
+				newsletter: false,
+				loyalty: false,
+				reviews: false,
+				productSubscriptions: false,
+				contactForm: false,
+				wishlist: false,
+				cookieConsent: false,
+				auctions: false,
+				surveys: false,
+				bookings: false,
+				productSets: false,
+				restockNotifications: false,
+				abandonedCarts: false,
+				newsletterPopup: false,
+				stripeTaxes: false,
+				translations: false,
+				cartRecommendations: false,
+				withdrawalButton: false,
+				events: false,
+			},
+			enabledLanguages: {
+				"en-US": true,
+				"pl-PL": true,
+				"es-ES": true,
+				"de-DE": true,
+			},
+			storeName: "Your Next Store",
+			storeDescription: "Your next e-commerce store",
+		},
+	},
+	publicUrl: "http://localhost:3000",
+} as APIMeGetResult;
+
+const USE_MOCK = !process.env.YNS_API_KEY || process.env.YNS_API_KEY === "dummy_key_for_dev";
+
 // Plain "use cache" (not "remote") so store settings can be part of the static
 // shell — remote-cached entries defer to request time and block prerendering
 // for everything that depends on them (metadata, <html lang>, nav links).
 export const meGetCached = async (token?: string) => {
 	"use cache";
+
+	if (USE_MOCK) {
+		return DEFAULT_ME;
+	}
 
 	const commerce = Commerce({ token, endpoint });
 	return commerce.meGet();
