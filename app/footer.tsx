@@ -7,7 +7,7 @@ export function Footer() {
 				<div className="py-12 sm:py-16 flex flex-col sm:flex-row gap-8 sm:gap-16">
 					{/* Brand */}
 					<div className="sm:max-w-xs">
-						<YnsLink prefetch={"eager"} href="/" className="text-xl font-bold text-foreground">
+						<YnsLink  href="/" className="text-xl font-bold text-foreground">
 							Your Next Store
 						</YnsLink>
 						<p className="mt-4 text-sm text-muted-foreground leading-relaxed">

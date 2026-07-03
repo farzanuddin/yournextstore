@@ -47,7 +47,7 @@ export async function ProductGrid({
 				</div>
 				{showViewAll && (
 					<YnsLink
-						prefetch={"eager"}
+						
 						href={viewAllHref}
 						className="hidden sm:inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
 					>
@@ -66,7 +66,7 @@ export async function ProductGrid({
 			{showViewAll && (
 				<div className="mt-12 text-center sm:hidden">
 					<YnsLink
-						prefetch={"eager"}
+						
 						href={viewAllHref}
 						className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
 					>

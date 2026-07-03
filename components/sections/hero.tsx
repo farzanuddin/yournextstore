@@ -18,7 +18,7 @@ export function Hero() {
 							</p>
 							<div className="mt-4">
 								<YnsLink
-									prefetch="eager"
+									
 									href="/products"
 									className="inline-flex items-center justify-center gap-2 h-10 px-5 bg-black text-white rounded-full text-sm font-medium hover:bg-black/80 transition-colors"
 								>
@@ -47,7 +47,7 @@ export function Hero() {
 							</p>
 							<div className="mt-6">
 								<YnsLink
-									prefetch="eager"
+									
 									href="/products"
 									className="inline-flex items-center justify-center gap-2 h-11 px-6 bg-black text-white rounded-full text-sm font-medium hover:bg-black/80 transition-colors"
 								>
