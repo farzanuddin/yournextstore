@@ -213,7 +213,7 @@ const mockCommerce = {
 		return cart ? cartToCommerceShape(cart) : null;
 	},
 
-	async cartUpsert(params: { cartId?: string; variantId: string; quantity: number }) {
+	async cartUpsert(params: { cartId?: string; variantId: string; quantity: number; mode?: "set" | "add" }) {
 		// Fetch product to get its data
 		const product = await fetchProduct(params.variantId.replace("v-", ""));
 		if (!product) return null;
@@ -221,8 +221,14 @@ const mockCommerce = {
 		const cart = getOrCreateCart(params.cartId);
 		const existing = cart.lineItems.find((i) => i.variantId === params.variantId);
 
+		// Remove item if quantity is 0
+		if (params.quantity <= 0) {
+			cart.lineItems = cart.lineItems.filter((i) => i.variantId !== params.variantId);
+			return cartToCommerceShape(cart);
+		}
+
 		if (existing) {
-			existing.quantity += params.quantity;
+			existing.quantity = params.mode === "set" ? params.quantity : existing.quantity + params.quantity;
 		} else {
 			cart.lineItems.push({
 				variantId: params.variantId,
