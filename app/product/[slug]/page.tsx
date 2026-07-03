@@ -14,6 +14,7 @@ import {
 	BreadcrumbPage,
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { EditImageButton } from "@/components/image-editor";
 import { commerce } from "@/lib/commerce";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -104,7 +105,10 @@ const ProductDetails = async ({ params }: { params: Promise<{ slug: string }> })
 			</Breadcrumb>
 			<div className="lg:grid lg:grid-cols-2 lg:gap-16">
 				{/* Left: Image Gallery (sticky on desktop) */}
-				<MediaGallery images={allImages} productName={product.name} variants={product.variants} />
+				<div className="relative">
+					<EditImageButton imageUrl={allImages[0]} />
+					<MediaGallery images={allImages} productName={product.name} variants={product.variants} />
+				</div>
 
 				{/* Right: Product Details */}
 				<div className="mt-8 lg:mt-0 space-y-8">
