@@ -354,25 +354,4 @@ export function getCanonicalUrl(): string {
 	return "http://localhost:3000";
 }
 
-export const getSubdomainPublicUrl = async () => {
-	const tenant = process.env.NEXT_PUBLIC_YNS_API_TENANT;
-	if (tenant) {
-		const tenantUrl = new URL(tenant);
-		const [subdomain, ...base] = tenantUrl.host.split(".");
-		const apiHost = base.join(".");
-		if (subdomain && apiHost) {
-			return {
-				subdomain,
-				// Preserve the tenant's scheme/port so local http backends work (not just https).
-				publicUrl: `${tenantUrl.protocol}//${apiHost}`,
-			};
-		}
-	}
 
-	// fallback to fetching from the API if env variable is not set or invalid
-	const {
-		store: { subdomain },
-		publicUrl,
-	} = await meGetCached(process.env.YNS_API_KEY);
-	return { subdomain, publicUrl };
-};

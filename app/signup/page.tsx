@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { type FormEvent, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function SignupPage() {
 	const [name, setName] = useState("");
@@ -48,45 +51,45 @@ export default function SignupPage() {
 
 					<form onSubmit={handleSubmit} className="mt-6 space-y-4" noValidate>
 						<div className="space-y-2">
-							<label htmlFor="name" className="text-sm font-medium">Name<span className="text-red-500 ml-px">*</span></label>
-							<input
+							<Label className="gap-0" htmlFor="name">Name<span className="text-red-500 ml-px">*</span></Label>
+							<Input
 								id="name"
 								type="text"
 								placeholder="John Doe"
 								value={name}
 								onChange={(e) => { setName(e.target.value); setErrors((prev) => ({ ...prev, name: undefined })); }}
-								className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${errors.name ? "border-red-500" : "border-input"}`}
+								className={errors.name ? "border-red-500" : ""}
 							/>
 							{errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
 						</div>
 
 						<div className="space-y-2">
-							<label htmlFor="email" className="text-sm font-medium">Email<span className="text-red-500 ml-px">*</span></label>
-							<input
+							<Label className="gap-0" htmlFor="email">Email<span className="text-red-500 ml-px">*</span></Label>
+							<Input
 								id="email"
 								type="email"
 								placeholder="m@example.com"
 								value={email}
 								onChange={(e) => { setEmail(e.target.value); setErrors((prev) => ({ ...prev, email: undefined })); }}
-								className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${errors.email ? "border-red-500" : "border-input"}`}
+								className={errors.email ? "border-red-500" : ""}
 							/>
 							{errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
 						</div>
 
 						<div className="space-y-2">
-							<label htmlFor="password" className="text-sm font-medium">Password<span className="text-red-500 ml-px">*</span></label>
-							<input
+							<Label className="gap-0" htmlFor="password">Password<span className="text-red-500 ml-px">*</span></Label>
+							<Input
 								id="password"
 								type="password"
 								placeholder="Password"
 								value={password}
 								onChange={(e) => { setPassword(e.target.value); setErrors((prev) => ({ ...prev, password: undefined })); }}
-								className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${errors.password ? "border-red-500" : "border-input"}`}
+								className={errors.password ? "border-red-500" : ""}
 							/>
 							{errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
 						</div>
 
-						<button type="submit" className="inline-flex w-full items-center justify-center rounded-md bg-foreground px-4 py-2.5 text-sm font-medium text-background hover:bg-foreground/90">Sign Up</button>
+						<Button type="submit" className="w-full">Sign Up</Button>
 					</form>
 
 					<div className="mt-4 text-center text-sm text-muted-foreground">

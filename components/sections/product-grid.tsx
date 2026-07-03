@@ -9,7 +9,7 @@ import { ProductCard } from "@/components/product-card";
 import { commerce } from "@/lib/commerce";
 import { YnsLink } from "../yns-link";
 
-export type Product = APIProductsBrowseResult["data"][number];
+type Product = APIProductsBrowseResult["data"][number];
 
 type ProductGridProps = {
 	title?: string;

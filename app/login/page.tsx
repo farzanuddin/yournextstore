@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { type FormEvent, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
 	const [email, setEmail] = useState("");
@@ -43,35 +46,35 @@ export default function LoginPage() {
 
 					<form onSubmit={handleSubmit} className="mt-6 space-y-4" noValidate>
 						<div className="space-y-2">
-							<label htmlFor="email" className="text-sm font-medium">Email<span className="text-red-500 ml-px">*</span></label>
-							<input
+							<Label className="gap-0" htmlFor="email">Email<span className="text-red-500 ml-px">*</span></Label>
+							<Input
 								id="email"
 								type="email"
 								placeholder="m@example.com"
 								value={email}
 								onChange={(e) => { setEmail(e.target.value); setErrors((prev) => ({ ...prev, email: undefined })); }}
-								className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${errors.email ? "border-red-500" : "border-input"}`}
+								className={errors.email ? "border-red-500" : ""}
 							/>
 							{errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
 						</div>
 
 						<div className="space-y-2">
 							<div className="flex items-center justify-between">
-								<label htmlFor="password" className="text-sm font-medium">Password<span className="text-red-500 ml-px">*</span></label>
+								<Label className="gap-0" htmlFor="password">Password<span className="text-red-500 ml-px">*</span></Label>
 								<Link href="/forgot-password" className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">Forgot your password?</Link>
 							</div>
-							<input
+							<Input
 								id="password"
 								type="password"
 								placeholder="Password"
 								value={password}
 								onChange={(e) => { setPassword(e.target.value); setErrors((prev) => ({ ...prev, password: undefined })); }}
-								className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${errors.password ? "border-red-500" : "border-input"}`}
+								className={errors.password ? "border-red-500" : ""}
 							/>
 							{errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
 						</div>
 
-						<button type="submit" className="inline-flex w-full items-center justify-center rounded-md bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90">Login</button>
+						<Button type="submit" className="w-full">Login</Button>
 					</form>
 
 					<div className="mt-4 text-center text-sm text-muted-foreground">

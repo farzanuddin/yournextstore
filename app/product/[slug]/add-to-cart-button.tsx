@@ -8,6 +8,7 @@ import { useCart } from "@/app/cart/cart-context";
 import { QuantitySelector } from "@/app/product/[slug]/quantity-selector";
 import { TrustBadges } from "@/app/product/[slug]/trust-badges";
 import { VariantSelector } from "@/app/product/[slug]/variant-selector";
+import { Button } from "@/components/ui/button";
 import { CURRENCY, LOCALE } from "@/lib/constants";
 import { formatMoney } from "@/lib/money";
 import { cn } from "@/lib/utils";
@@ -234,13 +235,13 @@ export function AddToCartButton({
 			/>
 
 			<form onSubmit={handleSubmit}>
-				<button
+				<Button
 					type="submit"
 					disabled={!selectedVariant || isOutOfStock}
-					className="w-full h-14 bg-foreground text-background py-4 px-8 rounded-full text-base font-medium tracking-wide hover:bg-foreground/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+					className="w-full h-14 rounded-full text-base font-medium tracking-wide"
 				>
 					{buttonText}
-				</button>
+				</Button>
 			</form>
 
 			<TrustBadges />

@@ -3,6 +3,9 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { type FormEvent, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function ForgotPasswordPage() {
 	const [email, setEmail] = useState("");
@@ -52,12 +55,19 @@ export default function ForgotPasswordPage() {
 					) : (
 						<form onSubmit={handleSubmit} className="mt-6 space-y-4" noValidate>
 							<div className="space-y-2">
-								<label htmlFor="email" className="text-sm font-medium">Email<span className="text-red-500 ml-px">*</span></label>
-								<input id="email" type="email" placeholder="m@example.com" value={email} onChange={(e) => { setEmail(e.target.value); setError(undefined); }} className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${error ? "border-red-500" : "border-input"}`} />
+								<Label className="gap-0" htmlFor="email">Email<span className="text-red-500 ml-px">*</span></Label>
+								<Input
+									id="email"
+									type="email"
+									placeholder="m@example.com"
+									value={email}
+									onChange={(e) => { setEmail(e.target.value); setError(undefined); }}
+									className={error ? "border-red-500" : ""}
+								/>
 								{error && <p className="text-sm text-red-500">{error}</p>}
 							</div>
 
-							<button type="submit" className="inline-flex w-full items-center justify-center rounded-md bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90">Send reset link</button>
+							<Button type="submit" className="w-full">Send reset link</Button>
 
 							<div className="text-center">
 								<Link href="/login" className="inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">
