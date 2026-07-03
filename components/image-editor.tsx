@@ -15,23 +15,23 @@ type ImageEditorProps = {
 
 export function ImageEditor({ imageUrl, onClose }: ImageEditorProps) {
 	return (
-		<div className="fixed inset-0 z-[100]">
-			<FilerobotImageEditor
-				source={imageUrl}
-				savingPixelRatio={4}
-				previewPixelRatio={window.devicePixelRatio || 1}
-				onSave={(editedImageObject) => {
-					console.log("Image saved:", editedImageObject);
-					// Open the edited image in a new tab
-					if (editedImageObject.imageBase64) {
-						const link = document.createElement("a");
-						link.href = editedImageObject.imageBase64;
-						link.download = "edited-image.png";
-						link.click();
-					}
-				}}
-				onClose={onClose}
-			/>
+		<div className="fixed inset-0 z-[100] flex items-center justify-center lg:bg-black/50 lg:p-4">
+			<div className="relative h-full w-full lg:h-[90vh] lg:max-w-5xl lg:overflow-hidden lg:rounded-xl lg:bg-background lg:shadow-2xl">
+				<FilerobotImageEditor
+					source={imageUrl}
+					savingPixelRatio={4}
+					previewPixelRatio={window.devicePixelRatio || 1}
+					onSave={(editedImageObject) => {
+						if (editedImageObject.imageBase64) {
+							const link = document.createElement("a");
+							link.href = editedImageObject.imageBase64;
+							link.download = "edited-image.png";
+							link.click();
+						}
+					}}
+					onClose={onClose}
+				/>
+			</div>
 		</div>
 	);
 }
@@ -53,9 +53,7 @@ export function EditImageButton({ imageUrl }: EditImageButtonProps) {
 				Edit
 			</button>
 
-			{editorOpen && (
-				<ImageEditor imageUrl={imageUrl} onClose={() => setEditorOpen(false)} />
-			)}
+			{editorOpen && <ImageEditor imageUrl={imageUrl} onClose={() => setEditorOpen(false)} />}
 		</>
 	);
 }
