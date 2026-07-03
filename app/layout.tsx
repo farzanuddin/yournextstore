@@ -8,12 +8,15 @@ import { CartProvider } from "@/app/cart/cart-context";
 import { CartSidebar } from "@/app/cart/cart-sidebar";
 import { CartButton } from "@/app/cart-button";
 import { Footer } from "@/app/footer";
+import { HideOnAuth } from "@/components/hide-on-auth";
 import { Navbar, type NavLink } from "@/app/navbar";
 import { SearchInput } from "@/app/search-input";
 import { Toaster } from "@/components/ui/sonner";
 import { YnsLink } from "@/components/yns-link";
 import { commerce, getCanonicalUrl, getStoreFaviconUrl, meGetCached } from "@/lib/commerce";
 import { getCartCookieJson } from "@/lib/cookies";
+import { User } from "lucide-react";
+import Link from "next/link";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -142,13 +145,22 @@ async function CartProviderWrapper({ children }: { children: React.ReactNode }) 
 								<Suspense>
 									<SearchInput />
 								</Suspense>
+								<Link
+									href="/login"
+									aria-label="User account"
+									className="p-2 hover:bg-secondary rounded-full transition-colors"
+								>
+									<User className="w-6 h-6" />
+								</Link>
 								<CartButton />
 							</div>
 						</div>
 					</div>
 				</header>
 				<main className="flex-1">{children}</main>
-				<Footer />
+				<HideOnAuth>
+					<Footer />
+				</HideOnAuth>
 			</div>
 			<CartSidebar />
 		</CartProvider>
