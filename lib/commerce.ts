@@ -1,6 +1,7 @@
 import type { APIMeGetResult } from "commerce-kit";
 import { Commerce } from "commerce-kit";
 import { fetchCategories, fetchCategory, fetchCollections, fetchProduct, fetchProducts } from "./fake-store";
+import { invariant } from "./invariant";
 
 // Override the API host (defaults to yns.store / yns.cx by key prefix). Useful for
 // pointing at a dev deployment, e.g. YNS_API_URL=https://dev.axelgrubba.com
@@ -30,7 +31,9 @@ function getOrCreateCart(cartId?: string): { id: string; lineItems: CartItem[] }
 	if (!cartStore.has(id)) {
 		cartStore.set(id, { id, lineItems: [] });
 	}
-	return cartStore.get(id)!;
+	const cart = cartStore.get(id);
+	invariant(cart, `Cart ${id} not found`);
+	return cart;
 }
 
 function cartToCommerceShape(cart: { id: string; lineItems: CartItem[] }) {

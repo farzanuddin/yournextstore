@@ -10,12 +10,12 @@ const FilerobotImageEditor = dynamic(
 
 type ImageEditorProps = {
 	imageUrl: string;
-	onClose: () => void;
+	onCloseAction: () => void;
 };
 
-export function ImageEditor({ imageUrl, onClose }: ImageEditorProps) {
+export function ImageEditor({ imageUrl, onCloseAction }: ImageEditorProps) {
 	return (
-		<div className="fixed inset-0 z-[100] flex items-center justify-center lg:bg-black/50 lg:p-4">
+		<div className="fixed inset-0 z-100 flex items-center justify-center lg:bg-black/50 lg:p-4">
 			<div className="relative h-full w-full lg:h-[90vh] lg:max-w-5xl lg:overflow-hidden lg:rounded-xl lg:bg-background lg:shadow-2xl">
 				<FilerobotImageEditor
 					source={imageUrl}
@@ -42,7 +42,7 @@ export function ImageEditor({ imageUrl, onClose }: ImageEditorProps) {
 							link.click();
 						}
 					}}
-					onClose={onClose}
+					onClose={onCloseAction}
 				/>
 			</div>
 		</div>
@@ -66,7 +66,7 @@ export function EditImageButton({ imageUrl }: EditImageButtonProps) {
 				Edit
 			</button>
 
-			{editorOpen && <ImageEditor imageUrl={imageUrl} onClose={() => setEditorOpen(false)} />}
+			{editorOpen && <ImageEditor imageUrl={imageUrl} onCloseAction={() => setEditorOpen(false)} />}
 		</>
 	);
 }
