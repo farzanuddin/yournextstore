@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, ShoppingBag } from "lucide-react";
+import { CreditCard, Loader2, Lock, ShieldCheck, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -47,6 +47,57 @@ export default function CheckoutPage() {
 		phone: "",
 	});
 	const [errors, setErrors] = useState<FormErrors>({});
+	const [paymentMethod, setPaymentMethod] = useState<"card" | "google-pay" | null>(null);
+	const [cardNumber, setCardNumber] = useState("");
+	const [cardExpiry, setCardExpiry] = useState("");
+	const [cardCvc, setCardCvc] = useState("");
+	const [cardError, setCardError] = useState("");
+
+	const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const raw = e.target.value.replace(/\D/g, "").slice(0, 16);
+		const formatted = raw.replace(/(\d{4})(?=\d)/g, "$1 ");
+		setCardNumber(formatted);
+		setCardError("");
+
+		// Validate Visa (starts with 4) or Mastercard (starts with 51-55 or 2221-2720)
+		if (raw.length >= 2) {
+			const isVisa = raw.startsWith("4");
+			const isMastercard = /^5[1-5]/.test(raw) || (/^2[2-7]/.test(raw) && raw.length >= 4 && Number(raw.slice(0, 4)) >= 2221 && Number(raw.slice(0, 4)) <= 2720);
+			if (!isVisa && !isMastercard) {
+				setCardError("Only Visa and Mastercard are accepted");
+			}
+		}
+	};
+
+	const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const raw = e.target.value.replace(/\D/g, "").slice(0, 4);
+		if (raw.length >= 2) {
+			setCardExpiry(raw.slice(0, 2) + " / " + raw.slice(2));
+		} else {
+			setCardExpiry(raw);
+		}
+	};
+
+	const handleCvcChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setCardCvc(e.target.value.replace(/\D/g, "").slice(0, 4));
+	};
+
+	function validatePayment(): boolean {
+		if (!paymentMethod) { setCardError("Please select a payment method"); return false; }
+		if (paymentMethod === "google-pay") return true;
+		const raw = cardNumber.replace(/\s/g, "");
+		if (raw.length < 13) { setCardError("Card number is required"); return false; }
+		if (cardExpiry.length < 7) { setCardError("Expiry date is required"); return false; }
+		if (cardCvc.length < 3) { setCardError("Security code is required"); return false; }
+		return true;
+	}
+
+	const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		// Only allow digits, spaces, dashes, parentheses, and leading +
+		const filtered = e.target.value.replace(/[^\d\s\-()+]/g, "");
+		setForm((prev) => ({ ...prev, phone: filtered }));
+		setErrors((prev) => ({ ...prev, phone: undefined }));
+	};
 
 	const handleChange = (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
 		setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -68,6 +119,11 @@ export default function CheckoutPage() {
 		if (!form.postalCode.trim()) next.postalCode = "Postal code is required";
 		if (!form.city.trim()) next.city = "City is required";
 		if (!form.country.trim()) next.country = "Country is required";
+		if (!form.phone.trim()) {
+			next.phone = "Phone number is required";
+		} else if (!/^\+?[\d\s\-()]{7,}$/.test(form.phone)) {
+			next.phone = "Enter a valid phone number";
+		}
 
 		setErrors(next);
 		return Object.keys(next).length === 0;
@@ -77,6 +133,7 @@ export default function CheckoutPage() {
 		e.preventDefault();
 
 		if (!validate()) return;
+		if (!validatePayment()) return;
 
 		if (items.length === 0) {
 			toast.error("Your cart is empty");
@@ -118,13 +175,15 @@ export default function CheckoutPage() {
 	return (
 		<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
 
-			<div className="lg:grid lg:grid-cols-[1fr_400px] lg:gap-12">
+			<div className="lg:grid lg:grid-cols-2 lg:gap-12">
 				{/* Shipping Form */}
-				<form onSubmit={handleSubmit} className="space-y-8" noValidate>
+				<form onSubmit={handleSubmit} className="space-y-6" noValidate>
 					<div className="space-y-6">
-						<h2 className="text-lg font-medium">Contact Information</h2>
 						<div>
-							<Label htmlFor="email">Email<span className="text-red-500 ml-px">*</span></Label>
+							<div className="flex items-center justify-between">
+								<Label className="gap-0" htmlFor="email">Email<span className="text-red-500 ml-px">*</span></Label>
+								<Link href="/login" className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">Sign in</Link>
+							</div>
 							<Input
 								id="email"
 								type="email"
@@ -141,7 +200,7 @@ export default function CheckoutPage() {
 						<h2 className="text-lg font-medium">Shipping Address</h2>
 						<div className="grid grid-cols-2 gap-4">
 							<div>
-								<Label htmlFor="firstName">First Name<span className="text-red-500 ml-px">*</span></Label>
+								<Label className="gap-0" htmlFor="firstName">First Name<span className="text-red-500 ml-px">*</span></Label>
 								<Input
 									id="firstName"
 									value={form.firstName}
@@ -151,7 +210,7 @@ export default function CheckoutPage() {
 								{errors.firstName && <p className="text-sm text-red-500 mt-1">{errors.firstName}</p>}
 							</div>
 							<div>
-								<Label htmlFor="lastName">Last Name<span className="text-red-500 ml-px">*</span></Label>
+								<Label className="gap-0" htmlFor="lastName">Last Name<span className="text-red-500 ml-px">*</span></Label>
 								<Input
 									id="lastName"
 									value={form.lastName}
@@ -162,7 +221,7 @@ export default function CheckoutPage() {
 							</div>
 						</div>
 						<div>
-							<Label htmlFor="address">Address<span className="text-red-500 ml-px">*</span></Label>
+							<Label className="gap-0" htmlFor="address">Address<span className="text-red-500 ml-px">*</span></Label>
 							<Input
 								id="address"
 								placeholder="123 Main St"
@@ -174,7 +233,7 @@ export default function CheckoutPage() {
 						</div>
 						<div className="grid grid-cols-2 gap-4">
 							<div>
-								<Label htmlFor="postalCode">Postal Code<span className="text-red-500 ml-px">*</span></Label>
+								<Label className="gap-0" htmlFor="postalCode">Postal Code<span className="text-red-500 ml-px">*</span></Label>
 								<Input
 									id="postalCode"
 									value={form.postalCode}
@@ -184,7 +243,7 @@ export default function CheckoutPage() {
 								{errors.postalCode && <p className="text-sm text-red-500 mt-1">{errors.postalCode}</p>}
 							</div>
 							<div>
-								<Label htmlFor="city">City<span className="text-red-500 ml-px">*</span></Label>
+								<Label className="gap-0" htmlFor="city">City<span className="text-red-500 ml-px">*</span></Label>
 								<Input
 									id="city"
 									value={form.city}
@@ -196,7 +255,7 @@ export default function CheckoutPage() {
 						</div>
 						<div className="grid grid-cols-2 gap-4">
 							<div>
-								<Label htmlFor="state">State / Region</Label>
+								<Label className="gap-0" htmlFor="state">State / Region</Label>
 								<Input
 									id="state"
 									value={form.state}
@@ -205,7 +264,7 @@ export default function CheckoutPage() {
 								/>
 							</div>
 							<div>
-								<Label htmlFor="country">Country<span className="text-red-500 ml-px">*</span></Label>
+								<Label className="gap-0" htmlFor="country">Country<span className="text-red-500 ml-px">*</span></Label>
 								<Input
 									id="country"
 									placeholder="United States"
@@ -217,15 +276,110 @@ export default function CheckoutPage() {
 							</div>
 						</div>
 						<div>
-							<Label htmlFor="phone">Phone Number</Label>
+							<Label className="gap-0" htmlFor="phone">Phone Number<span className="text-red-500 ml-px">*</span></Label>
 							<Input
 								id="phone"
 								type="tel"
 								placeholder="+1 (555) 000-0000"
 								value={form.phone}
-								onChange={handleChange("phone")}
-								className="mt-1.5"
+								onChange={handlePhoneChange}
+								className={`mt-1.5 ${errors.phone ? "border-red-500" : ""}`}
 							/>
+							{errors.phone && <p className="text-sm text-red-500 mt-1">{errors.phone}</p>}
+						</div>
+					</div>
+
+					{/* Payment Section */}
+					<div className="space-y-6">
+						<h2 className="text-lg font-medium">Payment</h2>
+						{cardError && !cardNumber && !cardExpiry && !cardCvc && <p className="text-sm text-red-500">{cardError}</p>}
+
+						<div className="space-y-3">
+							{/* Card Option */}
+							<label
+								className={`flex items-center gap-3 rounded-lg border p-4 cursor-pointer transition-colors ${paymentMethod === "card" ? "border-foreground bg-secondary/30" : "border-border hover:border-muted-foreground/30"}`}
+							>
+								<input
+									type="radio"
+									name="payment"
+									checked={paymentMethod === "card"}
+									onChange={() => { setPaymentMethod("card"); setCardError(""); }}
+									className="h-4 w-4 accent-foreground"
+								/>
+								<span className="text-sm font-medium">Card</span>
+								<span className="ml-auto flex gap-1.5 items-center">
+								<img src="/visa.svg" alt="Visa" className="h-5" />
+								<img src="/mc.svg" alt="Mastercard" className="h-5" />
+								</span>
+							</label>
+
+							{paymentMethod === "card" && (
+								<div className="space-y-4 pl-10">
+									<div>
+										<Label className="gap-0">Card Number</Label>
+										<div className="relative mt-1.5">
+											<Input
+												placeholder="1234 1234 1234 1234"
+												value={cardNumber}
+												onChange={handleCardNumberChange}
+												className={`font-mono ${cardError ? "border-red-500" : ""}`}
+												maxLength={19}
+											/>
+											<div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-1 items-center">
+									<img src="/visa.svg" alt="Visa" className={`h-4 ${cardNumber.replace(/\s/g, "").startsWith("4") ? "opacity-100" : "opacity-30"}`} />
+									<img src="/mc.svg" alt="Mastercard" className={`h-4 ${/^5[1-5]/.test(cardNumber.replace(/\s/g, "")) ? "opacity-100" : "opacity-30"}`} />
+											</div>
+										</div>
+										{cardError && <p className="text-sm text-red-500 mt-1">{cardError}</p>}
+									</div>
+									<div className="grid grid-cols-2 gap-4">
+										<div>
+											<Label className="gap-0">Expiration Date</Label>
+											<Input
+												placeholder="MM / YY"
+												value={cardExpiry}
+												onChange={handleExpiryChange}
+												className="mt-1.5"
+												maxLength={7}
+											/>
+										</div>
+										<div>
+											<Label className="gap-0">Security Code</Label>
+											<Input
+												placeholder="CVC"
+												value={cardCvc}
+												onChange={handleCvcChange}
+												className="mt-1.5"
+												maxLength={4}
+											/>
+										</div>
+									</div>
+								</div>
+							)}
+
+							{/* Google Pay Option */}
+							<label
+								className={`flex items-center gap-3 rounded-lg border p-4 cursor-pointer transition-colors ${paymentMethod === "google-pay" ? "border-foreground bg-secondary/30" : "border-border hover:border-muted-foreground/30"}`}
+							>
+								<input
+									type="radio"
+									name="payment"
+									checked={paymentMethod === "google-pay"}
+									onChange={() => { setPaymentMethod("google-pay"); setCardError(""); }}
+									className="h-4 w-4 accent-foreground"
+								/>
+								<span className="text-sm font-medium">Google Pay</span>
+								<img src="/gpay.svg" alt="Google Pay" className="ml-auto h-5" />
+							</label>
+
+							{paymentMethod === "google-pay" && (
+								<div className="pl-10">
+									<div className="flex items-start gap-2 rounded-lg bg-secondary/50 p-3 text-sm text-muted-foreground">
+										<Lock className="h-4 w-4 mt-0.5 shrink-0" />
+										<span>Another step will appear to securely submit your payment information.</span>
+									</div>
+								</div>
+							)}
 						</div>
 					</div>
 
@@ -239,6 +393,18 @@ export default function CheckoutPage() {
 							"Place Order"
 						)}
 					</Button>
+
+					<div className="flex items-center justify-center gap-6 text-xs text-muted-foreground mt-0.5">
+						<span className="flex items-center gap-1.5">
+							<Lock className="h-3 w-3" /> SSL Encrypted
+						</span>
+						<span className="flex items-center gap-1.5">
+							<ShieldCheck className="h-3 w-3" /> Secure Payment
+						</span>
+						<span className="flex items-center gap-1.5">
+							<CreditCard className="h-3 w-3" /> Powered by Stripe
+						</span>
+					</div>
 				</form>
 
 				{/* Order Summary */}
