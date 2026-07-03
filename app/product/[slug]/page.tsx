@@ -9,7 +9,6 @@ import { MediaGallery } from "@/app/product/[slug]/media-gallery";
 import { ProductFeatures } from "@/app/product/[slug]/product-features";
 import { ProductReviews } from "@/app/product/[slug]/product-reviews";
 import { RelatedProducts } from "@/app/product/[slug]/related-products";
-import { TiptapRenderer } from "@/components/tiptap-renderer";
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -19,7 +18,6 @@ import {
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { commerce, meGetCached } from "@/lib/commerce";
-import { buildProductBreadcrumbJsonLd, buildProductJsonLd, JsonLdScript } from "@/lib/json-ld";
 import { cn } from "@/lib/utils";
 
 function StarRow({ rating }: { rating: number }) {
@@ -98,12 +96,8 @@ const ProductDetails = async ({ params }: { params: Promise<{ slug: string }> })
 		...product.variants.flatMap((v) => v.images).filter((img) => !product.images.includes(img)),
 	];
 
-	const productJsonLd = await buildProductJsonLd(product, reviews);
-
 	return (
 		<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-			<JsonLdScript data={productJsonLd} />
-			<JsonLdScript data={buildProductBreadcrumbJsonLd(product)} />
 			<Breadcrumb className="mb-6">
 				<BreadcrumbList>
 					<BreadcrumbItem>
@@ -187,11 +181,11 @@ const ProductDetails = async ({ params }: { params: Promise<{ slug: string }> })
 			</div>
 
 			{/* Full description (below the fold, full width) */}
-			{product.content && (
+			{product.summary && (
 				<section className="mt-16 border-t border-border pt-12">
 					<h2 className="mb-6 text-2xl font-medium tracking-tight">Product details</h2>
 					<div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
-						<TiptapRenderer content={product.content} />
+						<p>{product.summary}</p>
 					</div>
 				</section>
 			)}

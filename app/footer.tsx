@@ -1,50 +1,6 @@
 import { cacheLife } from "next/cache";
 import { YnsLink } from "@/components/yns-link";
-import { commerce, meGetCached } from "@/lib/commerce";
-
-async function FooterBlogLink() {
-	"use cache";
-	cacheLife("hours");
-
-	const me = await meGetCached().catch(() => null);
-	if (!me?.store.settings?.enabledTools?.blog) {
-		return null;
-	}
-
-	return (
-		<li>
-			<YnsLink
-				prefetch={"eager"}
-				href="/blog"
-				className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-			>
-				Blog
-			</YnsLink>
-		</li>
-	);
-}
-
-async function FooterContactLink() {
-	"use cache";
-	cacheLife("hours");
-
-	const me = await meGetCached().catch(() => null);
-	if (!me?.store.settings?.enabledTools?.contactForm) {
-		return null;
-	}
-
-	return (
-		<li>
-			<YnsLink
-				prefetch={"eager"}
-				href="/contact"
-				className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-			>
-				Contact Us
-			</YnsLink>
-		</li>
-	);
-}
+import { commerce } from "@/lib/commerce";
 
 async function FooterCollections() {
 	"use cache";
@@ -76,36 +32,6 @@ async function FooterCollections() {
 	);
 }
 
-async function FooterLegalPages() {
-	"use cache";
-	cacheLife("hours");
-
-	const pages = await commerce.legalPageBrowse().catch(() => ({ data: [] }));
-
-	if (pages.data.length === 0) {
-		return null;
-	}
-
-	return (
-		<div>
-			<h3 className="text-sm font-semibold text-foreground">Legal</h3>
-			<ul className="mt-4 space-y-3">
-				{pages.data.map((page) => (
-					<li key={page.id}>
-						<YnsLink
-							prefetch={"eager"}
-							href={`/legal${page.href}`}
-							className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-						>
-							{page.label}
-						</YnsLink>
-					</li>
-				))}
-			</ul>
-		</div>
-	);
-}
-
 export function Footer() {
 	return (
 		<footer className="border-t border-border bg-background">
@@ -123,36 +49,6 @@ export function Footer() {
 
 					{/* Collections */}
 					<FooterCollections />
-
-					{/* Support */}
-					<div>
-						<h3 className="text-sm font-semibold text-foreground">Support</h3>
-						<ul className="mt-4 space-y-3">
-							<li>
-								<YnsLink
-									prefetch={"eager"}
-									href="/about"
-									className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-								>
-									About Us
-								</YnsLink>
-							</li>
-							<FooterContactLink />
-							<li>
-								<YnsLink
-									prefetch={"eager"}
-									href="/faq"
-									className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-								>
-									FAQ
-								</YnsLink>
-							</li>
-							<FooterBlogLink />
-						</ul>
-					</div>
-
-					{/* Legal */}
-					<FooterLegalPages />
 				</div>
 
 				{/* Bottom bar */}

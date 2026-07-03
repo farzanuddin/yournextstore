@@ -14,7 +14,6 @@ import {
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { commerce } from "@/lib/commerce";
-import { buildCategoryBreadcrumbJsonLd, JsonLdScript } from "@/lib/json-ld";
 import { CategoryPagination } from "./category-pagination";
 
 const PRODUCTS_PER_PAGE = 12;
@@ -205,7 +204,6 @@ export default async function CategoryPage(props: {
 
 	return (
 		<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-			<JsonLdScript data={buildCategoryBreadcrumbJsonLd(hierarchy)} />
 			<Breadcrumb className="mb-6">
 				<BreadcrumbList>
 					<BreadcrumbItem>

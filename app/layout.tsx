@@ -10,17 +10,10 @@ import { CartButton } from "@/app/cart-button";
 import { Footer } from "@/app/footer";
 import { Navbar, type NavLink } from "@/app/navbar";
 import { SearchInput } from "@/app/search-input";
-import { AuthButton } from "@/components/auth-button";
-import { CookieConsent } from "@/components/cookie-consent";
-import { ErrorOverlayRemover, NavigationReporter } from "@/components/devtools";
-import { NewsletterDialog } from "@/components/newsletter-dialog";
-import { ReferralBadge } from "@/components/referral-badge";
 import { Toaster } from "@/components/ui/sonner";
 import { YnsLink } from "@/components/yns-link";
-import { AUTH_ENABLED } from "@/lib/auth-config";
 import { commerce, getCanonicalUrl, getStoreFaviconUrl, meGetCached } from "@/lib/commerce";
 import { getCartCookieJson } from "@/lib/cookies";
-import { StoreJsonLd } from "@/lib/json-ld";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -86,7 +79,7 @@ async function getStoreMetadata(): Promise<Metadata> {
 			apple: [{ url: faviconUrl, sizes: "180x180" }],
 			shortcut: faviconUrl,
 		},
-		manifest: "/manifest.webmanifest",
+		manifest: "/logo.svg",
 	};
 }
 
@@ -150,7 +143,6 @@ async function CartProviderWrapper({ children }: { children: React.ReactNode }) 
 								<Suspense>
 									<SearchInput />
 								</Suspense>
-								{AUTH_ENABLED && <AuthButton />}
 								<CartButton />
 							</div>
 						</div>
@@ -158,7 +150,6 @@ async function CartProviderWrapper({ children }: { children: React.ReactNode }) 
 				</header>
 				<main className="flex-1">{children}</main>
 				<Footer />
-				<ReferralBadge />
 			</div>
 			<CartSidebar />
 		</CartProvider>
@@ -174,45 +165,20 @@ async function getHtmlLang(): Promise<string> {
 	}
 }
 
-async function NewsletterPopupSection() {
-	const me = await meGetCached();
-	if (!me.store.settings?.enabledTools?.newsletterPopup) {
-		return null;
-	}
-	return <NewsletterDialog settings={me.store.settings?.newsletterPopup} />;
-}
-
 export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const env = process.env.VERCEL_ENV || "development";
 	const lang = await getHtmlLang();
 
 	return (
 		<html lang={lang}>
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-				{/* DO NOT REMOVE / REORDER: required for GDPR + GTM Consent Mode v2. Must stay at top of <body>. */}
-				<Suspense>
-					<CookieConsent />
-				</Suspense>
-				<Suspense>
-					<StoreJsonLd />
-				</Suspense>
 				<Suspense>
 					<CartProviderWrapper>{children}</CartProviderWrapper>
 				</Suspense>
-				<Suspense>
-					<NewsletterPopupSection />
-				</Suspense>
 				<Toaster richColors position="top-center" />
-				{env === "development" && (
-					<>
-						<NavigationReporter />
-						<ErrorOverlayRemover />
-					</>
-				)}
 			</body>
 		</html>
 	);

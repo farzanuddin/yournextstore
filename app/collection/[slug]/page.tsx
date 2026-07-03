@@ -14,7 +14,6 @@ import {
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { commerce } from "@/lib/commerce";
-import { buildCollectionBreadcrumbJsonLd, buildCollectionJsonLd, JsonLdScript } from "@/lib/json-ld";
 import { YNSMedia } from "@/lib/yns-media";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -136,8 +135,6 @@ export default async function CollectionPage(props: PageProps<"/collection/[slug
 
 	return (
 		<>
-			<JsonLdScript data={buildCollectionJsonLd(collection)} />
-			<JsonLdScript data={buildCollectionBreadcrumbJsonLd(collection)} />
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
 				<Breadcrumb>
 					<BreadcrumbList>
