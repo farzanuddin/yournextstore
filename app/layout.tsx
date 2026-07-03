@@ -79,7 +79,6 @@ async function getStoreMetadata(): Promise<Metadata> {
 			apple: [{ url: faviconUrl, sizes: "180x180" }],
 			shortcut: faviconUrl,
 		},
-		manifest: "/logo.svg",
 	};
 }
 

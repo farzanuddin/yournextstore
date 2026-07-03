@@ -8,7 +8,6 @@ import { useCart } from "@/app/cart/cart-context";
 import { QuantitySelector } from "@/app/product/[slug]/quantity-selector";
 import { TrustBadges } from "@/app/product/[slug]/trust-badges";
 import { VariantSelector } from "@/app/product/[slug]/variant-selector";
-import { useVolumePricing, VolumePricingDisplay, type VolumeTier } from "@/app/product/[slug]/volume-pricing";
 import { CURRENCY, LOCALE } from "@/lib/constants";
 import { formatMoney } from "@/lib/money";
 import { cn } from "@/lib/utils";
@@ -45,7 +44,6 @@ type AddToCartButtonProps = {
 		images: string[];
 	};
 	summary?: string | null;
-	volumePricingTiers?: VolumeTier[];
 };
 
 const LOW_STOCK_THRESHOLD = 5;
@@ -54,7 +52,6 @@ export function AddToCartButton({
 	variants,
 	product,
 	summary,
-	volumePricingTiers = [],
 }: AddToCartButtonProps) {
 	const searchParams = useSearchParams();
 	const [quantity, setQuantity] = useState(1);
@@ -87,13 +84,7 @@ export function AddToCartButton({
 	const maxQuantity = selectedVariant?.stock ?? 99;
 	const effectiveQuantity = isOutOfStock ? 1 : Math.min(quantity, maxQuantity);
 
-	const { resolvedTiers, volumePrice } = useVolumePricing(
-		volumePricingTiers,
-		selectedVariant?.id,
-		effectiveQuantity,
-	);
-
-	const unitPrice = volumePrice ?? selectedVariant?.price;
+	const unitPrice = selectedVariant?.price;
 	const totalPrice = unitPrice ? BigInt(unitPrice) * BigInt(effectiveQuantity) : null;
 
 	const buttonText = useMemo(() => {
@@ -244,8 +235,6 @@ export function AddToCartButton({
 				max={Math.max(1, Math.min(99, maxQuantity))}
 				disabled={isOutOfStock}
 			/>
-
-			<VolumePricingDisplay tiers={resolvedTiers} quantity={effectiveQuantity} volumePrice={volumePrice} />
 
 			<form onSubmit={handleSubmit}>
 				<button
