@@ -43,7 +43,7 @@ export default function LoginPage() {
 
 					<form onSubmit={handleSubmit} className="mt-6 space-y-4" noValidate>
 						<div className="space-y-2">
-							<label htmlFor="email" className="text-sm font-medium">Email</label>
+							<label htmlFor="email" className="text-sm font-medium">Email<span className="text-red-500 ml-px">*</span></label>
 							<input
 								id="email"
 								type="email"
@@ -57,7 +57,7 @@ export default function LoginPage() {
 
 						<div className="space-y-2">
 							<div className="flex items-center justify-between">
-								<label htmlFor="password" className="text-sm font-medium">Password</label>
+								<label htmlFor="password" className="text-sm font-medium">Password<span className="text-red-500 ml-px">*</span></label>
 								<Link href="/forgot-password" className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">Forgot your password?</Link>
 							</div>
 							<input

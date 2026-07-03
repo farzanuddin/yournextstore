@@ -13,6 +13,8 @@ import {
 	useTransition,
 } from "react";
 
+const CART_STORAGE_KEY = "yns-cart";
+
 export type CartLineItem = {
 	quantity: number;
 	productVariant: {
@@ -102,6 +104,26 @@ export function CartProvider({ children, initialCart, initialCartId }: CartProvi
 	const [isMutating, startMutation] = useTransition();
 	const router = useRouter();
 
+	// Restore cart from localStorage if server cart is empty
+	const [restoredCart, setRestoredCart] = useState<Cart | null>(null);
+	const [restored, setRestored] = useState(false);
+
+	useEffect(() => {
+		if (initialCart || restored) return;
+		try {
+			const stored = localStorage.getItem(CART_STORAGE_KEY);
+			if (stored) {
+				const parsed = JSON.parse(stored) as Cart;
+				if (parsed?.lineItems?.length > 0) {
+					setRestoredCart(parsed);
+				}
+			}
+		} catch {
+			// ignore parse errors
+		}
+		setRestored(true);
+	}, [initialCart, restored]);
+
 	useEffect(() => {
 		// Re-fetch the cart when restored from bfcache — it can change on the hosted
 		// checkout (different origin) and would otherwise show stale items.
@@ -114,7 +136,9 @@ export function CartProvider({ children, initialCart, initialCartId }: CartProvi
 		return () => window.removeEventListener("pageshow", onPageShow);
 	}, []);
 
-	const [optimisticCart, dispatchCartAction] = useOptimistic(initialCart, (state, action: CartAction) => {
+	const effectiveCart = initialCart ?? restoredCart;
+
+	const [optimisticCart, dispatchCartAction] = useOptimistic(effectiveCart, (state, action: CartAction) => {
 		if (!state) {
 			// Handle ADD_ITEM when cart is null
 			if (action.type === "ADD_ITEM") {
@@ -195,6 +219,17 @@ export function CartProvider({ children, initialCart, initialCartId }: CartProvi
 
 	const openCart = useCallback(() => setIsOpen(true), []);
 	const closeCart = useCallback(() => setIsOpen(false), []);
+
+	// Persist cart to localStorage on changes
+	useEffect(() => {
+		if (optimisticCart && optimisticCart.id !== "optimistic") {
+			try {
+				localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(optimisticCart));
+			} catch {
+				// ignore quota errors
+			}
+		}
+	}, [optimisticCart]);
 
 	// Derive cartId from optimistic cart or initial
 	const currentCartId =

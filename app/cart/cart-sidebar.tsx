@@ -1,6 +1,7 @@
 "use client";
 
 import { Loader2, ShoppingBag } from "lucide-react";
+import Link from "next/link";
 import { useCart } from "@/app/cart/cart-context";
 import { CartItem } from "@/app/cart/cart-item";
 import { Button } from "@/components/ui/button";
@@ -15,7 +16,6 @@ import {
 } from "@/components/ui/sheet";
 import { CURRENCY, LOCALE } from "@/lib/constants";
 import { formatMoney } from "@/lib/money";
-import { cn } from "@/lib/utils";
 
 const FREE_SHIPPING_THRESHOLD = 10000n; // $100.00 in minor units
 
@@ -109,18 +109,8 @@ export function CartSidebar() {
 								    different Next.js zone (yns.store). A soft RSC nav 500s the cross-zone request.
 								    While a cart write is in flight, block the link: a full navigation now would
 								    load /checkout before the item is committed server-side and show an empty cart. */}
-								<Button asChild className="w-full h-12 text-base font-medium">
-									<a
-										href={checkoutUrl}
-										aria-disabled={isMutating}
-										tabIndex={isMutating ? -1 : undefined}
-										onClick={(e) => {
-											if (isMutating) {
-												e.preventDefault();
-											}
-										}}
-										className={cn(isMutating && "pointer-events-none opacity-60")}
-									>
+								<Button asChild className="w-full h-12 text-base font-medium rounded-full" disabled={isMutating}>
+									<Link href={checkoutUrl}>
 										{isMutating ? (
 											<>
 												<Loader2 className="h-4 w-4 animate-spin" />
@@ -129,7 +119,7 @@ export function CartSidebar() {
 										) : (
 											"Checkout"
 										)}
-									</a>
+									</Link>
 								</Button>
 								<button
 									type="button"
