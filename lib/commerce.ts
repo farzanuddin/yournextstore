@@ -51,12 +51,18 @@ function cartToCommerceShape(cart: { id: string; lineItems: CartItem[] }) {
 	};
 }
 
-// ─── Base commerce client ───────────────────────────────────────────────
+// ─── Base commerce client (lazy to avoid throwing when YNS_API_KEY is unset) ──
 
-const realCommerce = Commerce({
-	token: process.env.YNS_API_KEY,
-	endpoint,
-});
+let _realCommerce: ReturnType<typeof Commerce> | null = null;
+const getRealCommerce = () => {
+	if (!_realCommerce) {
+		_realCommerce = Commerce({
+			token: process.env.YNS_API_KEY,
+			endpoint,
+		});
+	}
+	return _realCommerce;
+};
 
 // ─── Lifestyle store configuration ────────────────────────────────────────
 
@@ -81,7 +87,7 @@ const ALLOWED_PRODUCT_IDS = new Set([
 // ─── Proxied commerce client ────────────────────────────────────────────
 
 const mockCommerce = {
-	...realCommerce,
+	...getRealCommerce(),
 
 	async productBrowse(params: Record<string, unknown>) {
 		const searchQuery = (params.query as string) || (params.search as string) || undefined;
@@ -274,7 +280,7 @@ const mockCommerce = {
 	},
 };
 
-export const commerce = USE_MOCK ? (mockCommerce as unknown as typeof realCommerce) : realCommerce;
+export const commerce = USE_MOCK ? (mockCommerce as unknown as ReturnType<typeof Commerce>) : getRealCommerce();
 
 const DEFAULT_ME = {
 	store: {
