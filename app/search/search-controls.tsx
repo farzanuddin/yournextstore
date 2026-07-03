@@ -121,11 +121,9 @@ export function SortSelect({ value }: { value: SortKey }) {
 export function CategorySidebar({
 	categories,
 	activeCategory,
-	totalCount,
 }: {
 	categories: Category[];
 	activeCategory?: string;
-	totalCount: number;
 }) {
 	const searchParams = useSearchParams();
 
@@ -137,7 +135,6 @@ export function CategorySidebar({
 					href={buildUrl(searchParams, { category: null })}
 					isActive={!activeCategory}
 					label="All"
-					count={totalCount}
 				/>
 				{categories.map((c) => (
 					<FilterRow
@@ -155,19 +152,14 @@ export function CategorySidebar({
 export function MobileControls({
 	categories,
 	activeCategory,
-	sort,
-	totalCount,
 }: {
 	categories: Category[];
 	activeCategory?: string;
-	sort: SortKey;
-	totalCount: number;
 }) {
 	const searchParams = useSearchParams();
 	const [open, setOpen] = useState(false);
 	const close = () => setOpen(false);
 	const active = categories.find((c) => c.slug === activeCategory);
-	const activeSort = SORT_OPTIONS.find((s) => s.value === sort);
 
 	return (
 		<div className="sticky top-16 z-30 -mx-4 flex items-center justify-between border-y border-border bg-background/90 px-4 py-3 text-xs uppercase tracking-[0.18em] backdrop-blur-md sm:hidden">
@@ -179,34 +171,19 @@ export function MobileControls({
 					>
 						<SlidersHorizontal className="h-3.5 w-3.5" strokeWidth={1.5} />
 						<span>
-							Filter{active ? ` · ${active.name}` : ""} / {activeSort?.label}
+							Filter{active ? ` · ${active.name}` : ""}
 						</span>
 					</button>
 				</SheetTrigger>
 				<SheetContent side="bottom" className="rounded-t-2xl p-6">
 					<SheetTitle className="text-2xl font-medium tracking-tight">Refine</SheetTitle>
 
-					<h3 className="mt-6 mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Sort</h3>
-					<ul className="flex flex-col">
-						{SORT_OPTIONS.map((opt) => (
-							<FilterRow
-								key={opt.value}
-								href={buildUrl(searchParams, { sort: opt.value })}
-								isActive={opt.value === sort}
-								label={opt.label}
-								size="md"
-								onClick={close}
-							/>
-						))}
-					</ul>
-
-					<h3 className="mt-8 mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Category</h3>
+					<h3 className="mt-6 mb-3 text-xs uppercase tracking-[0.18em] text-muted-foreground">Category</h3>
 					<ul className="flex flex-col">
 						<FilterRow
 							href={buildUrl(searchParams, { category: null })}
 							isActive={!activeCategory}
 							label="All"
-							count={totalCount}
 							size="md"
 							onClick={close}
 						/>
@@ -223,7 +200,6 @@ export function MobileControls({
 					</ul>
 				</SheetContent>
 			</Sheet>
-			<span className="tabular-nums text-foreground">{totalCount}</span>
 		</div>
 	);
 }

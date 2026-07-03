@@ -13,14 +13,6 @@ import {
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { commerce } from "@/lib/commerce";
-import { CategoryPagination } from "./category-pagination";
-
-const PRODUCTS_PER_PAGE = 12;
-
-// Filters that apply on top of the path-locked category.
-type CategoryFilterParams = {
-	page?: string;
-};
 
 // The SDK loads the parent chain up to 2 levels deep (self -> parent -> grandparent),
 // so the canonical path is capped at 3 segments (e.g. fashion/tops/t-shirts).
@@ -92,26 +84,14 @@ function ProductGridSkeleton() {
 	);
 }
 
-async function CategoryProducts({
-	slug,
-	canonicalPath,
-	filters,
-}: {
-	slug: string;
-	canonicalPath: string;
-	filters: CategoryFilterParams;
-}) {
+async function CategoryProducts({ slug }: { slug: string }) {
 	"use cache";
 	cacheLife("minutes");
-
-	const currentPage = Math.max(1, Number(filters.page) || 1);
-	const offset = (currentPage - 1) * PRODUCTS_PER_PAGE;
 
 	const result = await commerce.productBrowse({
 		active: true,
 		category: slug,
-		limit: PRODUCTS_PER_PAGE,
-		offset,
+		limit: 100,
 	});
 
 	if (result.data.length === 0) {
@@ -122,31 +102,19 @@ async function CategoryProducts({
 		);
 	}
 
-	const totalPages = Math.ceil(result.meta.count / PRODUCTS_PER_PAGE);
-
 	return (
-		<>
-			<div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-				{result.data.map((product, index) => (
-					<ProductCard key={product.id} product={product} priority={index === 0} />
-				))}
-			</div>
-			<CategoryPagination
-				basePath={`/category/${canonicalPath}`}
-				currentPage={currentPage}
-				totalPages={totalPages}
-				filters={filters}
-			/>
-		</>
+		<div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+			{result.data.map((product, index) => (
+				<ProductCard key={product.id} product={product} priority={index === 0} />
+			))}
+		</div>
 	);
 }
 
 export default async function CategoryPage(props: {
 	params: Promise<{ slugs: string[] }>;
-	searchParams: Promise<CategoryFilterParams>;
 }) {
 	const { slugs } = await props.params;
-	const filters = await props.searchParams;
 	const slug = slugs.at(-1);
 	if (!slug) {
 		notFound();
@@ -202,7 +170,7 @@ export default async function CategoryPage(props: {
 			</div>
 
 			<Suspense fallback={<ProductGridSkeleton />}>
-				<CategoryProducts slug={slug} canonicalPath={canonicalPath} filters={filters} />
+				<CategoryProducts slug={slug} />
 			</Suspense>
 		</div>
 	);

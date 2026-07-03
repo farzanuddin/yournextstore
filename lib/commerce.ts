@@ -117,6 +117,41 @@ const mockCommerce = {
 		return { ...result, meta: { ...result.meta, count: result.meta.total } };
 	},
 
+	async search(params: { query: string; limit?: number; offset?: number }) {
+		const result = await fetchProducts({
+			search: params.query,
+			limit: 100, // fetch more then filter
+			offset: 0,
+		});
+		// Filter to our curated products only
+		const filtered = result.data.filter((p) => {
+			const catId = p.category?.id;
+			if (catId && !LIFESTYLE_ALLOWED.has(catId)) return false;
+			if (p.id && !ALLOWED_PRODUCT_IDS.has(Number(p.id))) return false;
+			return true;
+		});
+		const offset = params.offset ?? 0;
+		const limit = params.limit ?? 6;
+		const sliced = filtered.slice(offset, offset + limit);
+		return {
+			items: sliced.map((p) => ({
+				type: "product" as const,
+				id: p.id,
+				name: p.name,
+				slug: p.slug,
+				summary: p.description ?? null,
+				image: p.images?.[0] ?? null,
+				relevance: 1,
+			})),
+			pagination: {
+				total: filtered.length,
+				offset,
+				limit,
+				hasMore: offset + limit < filtered.length,
+			},
+		};
+	},
+
 	async productGet(params: { idOrSlug: string }) {
 		return fetchProduct(params.idOrSlug);
 	},
