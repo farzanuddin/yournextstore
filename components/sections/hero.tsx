@@ -3,42 +3,36 @@ import { YnsLink } from "../yns-link";
 
 export function Hero() {
 	return (
-		<section className="relative overflow-hidden bg-secondary/30">
+		<section className="py-4 sm:py-6 lg:py-8">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div className="py-16 sm:py-20 lg:py-28">
-					<div className="max-w-2xl">
-						<h1 className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight text-foreground">
-							Curated essentials for modern living
-						</h1>
-						<p className="mt-6 text-lg sm:text-xl text-muted-foreground leading-relaxed">
-							Discover our thoughtfully designed collection of premium products, crafted with care and built
-							to last.
-						</p>
-						<div className="mt-10 flex flex-col sm:flex-row gap-4">
-							<YnsLink
-								prefetch={"eager"}
-								href="#products"
-								className="inline-flex items-center justify-center gap-2 h-12 px-8 bg-foreground text-background rounded-full text-base font-medium hover:bg-foreground/90 transition-colors"
-							>
-								Shop Collection
-								<ArrowRightIcon className="h-4 w-4" />
-							</YnsLink>
-							<YnsLink
-								prefetch={"eager"}
-								href="#about"
-								className="inline-flex items-center justify-center gap-2 h-12 px-8 border border-border rounded-full text-base font-medium hover:bg-secondary transition-colors"
-							>
-								Our Story
-							</YnsLink>
+				<div className="relative w-full mx-auto aspect-[2.5/1] sm:aspect-[2/1] rounded-3xl overflow-hidden">
+					<img
+						src="/hero.avif"
+						alt="Hero"
+						className="absolute inset-0 w-full h-full object-cover"
+					/>
+					<div className="absolute inset-0 flex items-center p-8 sm:p-12 lg:p-16">
+						<div className="max-w-xl">
+							<h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight text-black leading-tight">
+								Curated essentials for modern living.
+							</h1>
+							<p className="mt-3 text-sm sm:text-base text-black/70 leading-relaxed">
+								Discover our thoughtfully designed collection of premium products, crafted with care and built to last.
+							</p>
+							<div className="mt-6">
+								<YnsLink
+									prefetch="eager"
+									href="/products"
+									className="inline-flex items-center justify-center gap-2 h-11 px-6 bg-black text-white rounded-full text-sm font-medium hover:bg-black/80 transition-colors"
+								>
+									Shop Collection
+									<ArrowRightIcon className="h-4 w-4" />
+								</YnsLink>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			{/* Subtle decorative element */}
-			<div
-				aria-hidden="true"
-				className="absolute top-1/2 right-0 -translate-y-1/2 w-1/3 h-full bg-linear-to-l from-secondary/50 to-transparent pointer-events-none hidden lg:block"
-			/>
 		</section>
 	);
 }
