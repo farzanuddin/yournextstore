@@ -8,7 +8,7 @@ import { CartProvider } from "@/app/cart/cart-context";
 import { CartSidebar } from "@/app/cart/cart-sidebar";
 import { CartButton } from "@/app/cart-button";
 import { Footer } from "@/app/footer";
-import { HideOnAuth } from "@/components/hide-on-auth";
+import { HideOnAuthPages } from "@/components/hide-on-auth";
 import { Navbar, type NavLink } from "@/app/navbar";
 import { SearchInput } from "@/app/search-input";
 import { Toaster } from "@/components/ui/sonner";
@@ -155,9 +155,9 @@ async function CartProviderWrapper({ children }: { children: React.ReactNode }) 
 					</div>
 				</header>
 				<main className="flex-1">{children}</main>
-				<HideOnAuth>
+				<HideOnAuthPages>
 					<Footer />
-				</HideOnAuth>
+				</HideOnAuthPages>
 			</div>
 			<CartSidebar />
 		</CartProvider>

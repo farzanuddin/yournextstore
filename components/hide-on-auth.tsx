@@ -4,7 +4,8 @@ import { usePathname } from "next/navigation";
 
 const HIDDEN_PATHS = ["/login", "/signup", "/forgot-password"];
 
-export function HideOnAuth({ children }: { children: React.ReactNode }) {
+/** Hides children on auth-related pages (login, signup, forgot-password). */
+export function HideOnAuthPages({ children }: { children: React.ReactNode }) {
 	const pathname = usePathname();
 
 	if (HIDDEN_PATHS.includes(pathname)) {
