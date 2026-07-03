@@ -3,43 +3,21 @@ import { cacheLife } from "next/cache";
 import { Suspense } from "react";
 import { ProductCard } from "@/components/product-card";
 import { commerce } from "@/lib/commerce";
-import { ProductsPagination } from "./products-pagination";
-import { SortLinks, SortSelect } from "./products-sort-select";
-
-const PRODUCTS_PER_PAGE = 12;
-
-const sortOptions = [
-	{ value: "newest", label: "Newest", orderBy: "createdAt", orderDirection: "desc" },
-	{ value: "price-asc", label: "Price: Low to High", orderBy: "price", orderDirection: "asc" },
-	{ value: "price-desc", label: "Price: High to Low", orderBy: "price", orderDirection: "desc" },
-	{ value: "name", label: "Name: A–Z", orderBy: "name", orderDirection: "asc" },
-] as const;
 
 type ProductFilterParams = {
-	page?: string;
-	sort?: string;
 	category?: string;
 };
 
-export async function generateMetadata({
-	searchParams,
-}: {
-	searchParams: Promise<{ page?: string }>;
-}): Promise<Metadata> {
-	const { page } = await searchParams;
-	const pageNum = Math.max(1, Number(page) || 1);
-	const canonical = pageNum > 1 ? `/products?page=${pageNum}` : "/products";
-	const title = pageNum > 1 ? `All Products — Page ${pageNum}` : "All Products";
-
+export async function generateMetadata(): Promise<Metadata> {
 	return {
-		title,
+		title: "All Products",
 		description: "Browse our complete product collection.",
-		alternates: { canonical },
+		alternates: { canonical: "/products" },
 		openGraph: {
 			type: "website",
-			title,
+			title: "All Products",
 			description: "Browse our complete product collection.",
-			url: canonical,
+			url: "/products",
 		},
 	};
 }
@@ -48,20 +26,11 @@ async function ProductList({ filters }: { filters: ProductFilterParams }) {
 	"use cache";
 	cacheLife("minutes");
 
-	const currentPage = Math.max(1, Number(filters.page) || 1);
-	const offset = (currentPage - 1) * PRODUCTS_PER_PAGE;
-	const sortOption = sortOptions.find((s) => s.value === filters.sort) ?? sortOptions[0];
-
 	const result = await commerce.productBrowse({
 		active: true,
-		limit: PRODUCTS_PER_PAGE,
-		offset,
-		orderBy: sortOption.orderBy,
-		orderDirection: sortOption.orderDirection,
+		limit: 100,
 		category: filters.category,
 	});
-
-	const totalPages = Math.ceil(result.meta.count / PRODUCTS_PER_PAGE);
 
 	if (result.data.length === 0) {
 		return (
@@ -72,15 +41,11 @@ async function ProductList({ filters }: { filters: ProductFilterParams }) {
 	}
 
 	return (
-		<>
-			<div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-				{result.data.map((product, index) => (
-					<ProductCard key={product.id} product={product} priority={index === 0} />
-				))}
-			</div>
-
-			<ProductsPagination currentPage={currentPage} totalPages={totalPages} filters={filters} />
-		</>
+		<div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+			{result.data.map((product, index) => (
+				<ProductCard key={product.id} product={product} priority={index === 0} />
+			))}
+		</div>
 	);
 }
 
@@ -100,8 +65,6 @@ function ProductGridSkeleton() {
 	);
 }
 
-// Awaits `searchParams` (runtime data) inside a Suspense boundary so the page shell
-// stays prerenderable; `ProductList` remains cached, keyed on the resolved filters.
 async function ProductSection({ searchParams }: { searchParams: Promise<ProductFilterParams> }) {
 	const filters = await searchParams;
 	return <ProductList filters={filters} />;
@@ -115,20 +78,9 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
 				<p className="mt-2 text-muted-foreground">Browse our complete collection</p>
 			</div>
 
-			<div>
-				<div className="mb-8 flex items-center justify-between gap-3">
-					<SortSelect options={sortOptions} />
-				</div>
-
-				<div className="mb-8 hidden flex-wrap items-center gap-3 lg:flex">
-					<span className="text-sm text-muted-foreground">Sort by:</span>
-					<SortLinks options={sortOptions} />
-				</div>
-
-				<Suspense fallback={<ProductGridSkeleton />}>
-					<ProductSection searchParams={searchParams} />
-				</Suspense>
-			</div>
+			<Suspense fallback={<ProductGridSkeleton />}>
+				<ProductSection searchParams={searchParams} />
+			</Suspense>
 		</div>
 	);
 }

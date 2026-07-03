@@ -60,22 +60,20 @@ const realCommerce = Commerce({
 const LIFESTYLE_CATEGORIES: Record<string, string> = {
 	"1": "Apparel",
 	"3": "Lifestyle",
-	"4": "Shoes",
 	"5": "Accessories",
 };
 
 const LIFESTYLE_ALLOWED = new Set(Object.keys(LIFESTYLE_CATEGORIES));
 
-function isSpamProduct(name: string): boolean {
-	const lower = name.toLowerCase();
-	// Filter out test/junk products
-	if (name.length < 5) return true;
-	if (lower.startsWith("new product")) return true;
-	if (lower.startsWith("new ")) return true;
-	if (/^\w+$/.test(lower) && name.length < 15) return true; // single-word gibberish
-	if (["phone", "phonerrrrrrrrr", "loliplo", "asdfasdf", "pindonga", "nuevo producto"].some(s => lower.includes(s))) return true;
-	return false;
-}
+// Only these product IDs from the Fake Store API are allowed
+const ALLOWED_PRODUCT_IDS = new Set([
+	// Apparel (hoodies, joggers, caps, shorts, t-shirts)
+	2, 4, 5, 7, 9, 11, 12, 13, 14, 15, 17,
+	// Lifestyle (sofa, tables, armchair, workstation)
+	28, 29, 30, 31, 32, 33,
+	// Accessories (luggage)
+	48,
+]);
 
 // ─── Proxied commerce client ────────────────────────────────────────────
 
@@ -105,11 +103,11 @@ const mockCommerce = {
 			search: searchQuery,
 			categoryId,
 		});
-		// Filter to lifestyle categories only and remove spam
-		result.data = result.data.filter((p: { category?: { id?: string } | null; name?: string }) => {
+		// Filter to lifestyle categories + allowed product IDs
+		result.data = result.data.filter((p: { category?: { id?: string } | null; id?: string }) => {
 			const catId = p.category?.id;
 			if (catId && !LIFESTYLE_ALLOWED.has(catId)) return false;
-			if (p.name && isSpamProduct(p.name)) return false;
+			if (p.id && !ALLOWED_PRODUCT_IDS.has(Number(p.id))) return false;
 			return true;
 		});
 		// Commerce-kit uses meta.count, not meta.total
