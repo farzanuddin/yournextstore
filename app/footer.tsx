@@ -1,36 +1,4 @@
-import { cacheLife } from "next/cache";
 import { YnsLink } from "@/components/yns-link";
-import { commerce } from "@/lib/commerce";
-
-async function FooterCollections() {
-	"use cache";
-	cacheLife("hours");
-
-	const collections = await commerce.collectionBrowse({ limit: 5 }).catch(() => ({ data: [] }));
-
-	if (collections.data.length === 0) {
-		return null;
-	}
-
-	return (
-		<div>
-			<h3 className="text-sm font-semibold text-foreground">Collections</h3>
-			<ul className="mt-4 space-y-3">
-				{collections.data.map((collection) => (
-					<li key={collection.id}>
-						<YnsLink
-							prefetch={"eager"}
-							href={`/collection/${collection.slug}`}
-							className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-						>
-							{collection.name}
-						</YnsLink>
-					</li>
-				))}
-			</ul>
-		</div>
-	);
-}
 
 export function Footer() {
 	return (
@@ -47,8 +15,6 @@ export function Footer() {
 						</p>
 					</div>
 
-					{/* Collections */}
-					<FooterCollections />
 				</div>
 
 				{/* Bottom bar */}

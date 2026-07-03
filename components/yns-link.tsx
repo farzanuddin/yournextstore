@@ -31,7 +31,7 @@ export const YnsLink = ({
 	return (
 		<Link
 			{...props}
-			prefetch={!!prefetch}
+			prefetch={prefetch ? true : false}
 			className={cn(className, isActive && activeClassName)}
 			{...(strHref &&
 				prefetch === "eager" && {

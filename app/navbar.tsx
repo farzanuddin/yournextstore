@@ -35,7 +35,6 @@ export function Navbar({ links }: { links: NavLink[] }) {
 						{links.map((link) => (
 							<YnsLink
 								key={link.href}
-								prefetch="eager"
 								href={link.href}
 								onClick={() => setOpen(false)}
 								className="rounded-lg px-3 py-3 text-base font-medium text-foreground transition-colors hover:bg-secondary"
@@ -50,7 +49,6 @@ export function Navbar({ links }: { links: NavLink[] }) {
 				{links.map((link) => (
 					<YnsLink
 						key={link.href}
-						prefetch="eager"
 						href={link.href}
 						className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
 					>
