@@ -21,6 +21,7 @@ export function ImageEditor({ imageUrl, onClose }: ImageEditorProps) {
 					source={imageUrl}
 					savingPixelRatio={4}
 					previewPixelRatio={window.devicePixelRatio || 1}
+					tabsIds={["Adjust", "Finetune", "Filters", "Annotate"]}
 					onSave={(editedImageObject) => {
 						if (editedImageObject.imageBase64) {
 							const link = document.createElement("a");

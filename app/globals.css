@@ -150,3 +150,25 @@
 		background-position: -200% 0;
 	}
 }
+
+/* Filerobot editor customizations */
+
+.FIE_topbar-center-options {
+	display: none !important;
+}
+
+/* Center the tools bar items */
+.FIE_tools-items {
+	display: flex !important;
+	justify-content: center !important;
+}
+
+/* Hide unwanted tool buttons completely (target the wrapper <li>) */
+.FIE_tools-item-wrapper:has(.FIE_rotate-tool-button),
+.FIE_tools-item-wrapper:has(.FIE_blur-tool-button),
+.FIE_tools-item-wrapper:has(.FIE_image-tool-button),
+.FIE_tools-item-wrapper:has(.FIE_rect-tool-button),
+.FIE_tools-item-wrapper:has(.FIE_ellipse-tool-button),
+.FIE_tools-item-wrapper:has(.FIE_polygon-tool-button) {
+	display: none !important;
+}
