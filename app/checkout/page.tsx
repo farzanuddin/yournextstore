@@ -2,7 +2,7 @@
 
 import { Loader2, ShoppingBag } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useCart } from "@/app/cart/cart-context";
 import { Button } from "@/components/ui/button";
@@ -29,8 +29,12 @@ type FormData = {
 type FormErrors = Partial<Record<keyof FormData, string>>;
 
 export default function CheckoutPage() {
-	const { items, itemCount, subtotal } = useCart();
+	const { items, itemCount, subtotal, closeCart } = useCart();
 	const [isPlacing, setIsPlacing] = useState(false);
+
+	useEffect(() => {
+		closeCart();
+	}, [closeCart]);
 	const [form, setForm] = useState<FormData>({
 		email: "",
 		firstName: "",
