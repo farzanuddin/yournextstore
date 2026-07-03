@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
 import { Suspense } from "react";
 import { ProductCard } from "@/components/product-card";
-import { ProductFilters, ProductFiltersMobile } from "@/components/sections/product-filters";
 import { commerce } from "@/lib/commerce";
 import { ProductsPagination } from "./products-pagination";
 import { SortLinks, SortSelect } from "./products-sort-select";
@@ -20,18 +19,7 @@ type ProductFilterParams = {
 	page?: string;
 	sort?: string;
 	category?: string;
-	collection?: string;
-	brand?: string;
-	priceMin?: string;
-	priceMax?: string;
-	vts?: string;
 };
-
-async function getFilterFacets() {
-	"use cache";
-	cacheLife("minutes");
-	return commerce.productFilters();
-}
 
 export async function generateMetadata({
 	searchParams,
@@ -71,11 +59,6 @@ async function ProductList({ filters }: { filters: ProductFilterParams }) {
 		orderBy: sortOption.orderBy,
 		orderDirection: sortOption.orderDirection,
 		category: filters.category,
-		collection: filters.collection,
-		brand: filters.brand,
-		priceMin: filters.priceMin ? Number(filters.priceMin) : undefined,
-		priceMax: filters.priceMax ? Number(filters.priceMax) : undefined,
-		vts: filters.vts,
 	});
 
 	const totalPages = Math.ceil(result.meta.count / PRODUCTS_PER_PAGE);
@@ -125,17 +108,6 @@ async function ProductSection({ searchParams }: { searchParams: Promise<ProductF
 }
 
 export default async function ProductsPage({ searchParams }: { searchParams: Promise<ProductFilterParams> }) {
-	// `facets` is cached and independent of `searchParams`, so it can drive the layout
-	// shell without making the route blocking. Runtime `searchParams` is read inside the
-	// Suspense boundary below (see `ProductSection`).
-	const facets = await getFilterFacets();
-	const filtersAvailable =
-		facets.categories.length > 0 ||
-		facets.collections.length > 0 ||
-		facets.brands.length > 0 ||
-		facets.variantTypes.length > 0 ||
-		facets.priceBounds.max > 0;
-
 	return (
 		<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
 			<div className="mb-10">
@@ -143,26 +115,19 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
 				<p className="mt-2 text-muted-foreground">Browse our complete collection</p>
 			</div>
 
-			<div className={filtersAvailable ? "lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-10" : ""}>
-				{filtersAvailable && <ProductFilters facets={facets} />}
-
-				<div>
-					{/* Mobile/tablet toolbar: Filters button + compact Sort dropdown (sidebar is hidden below lg). */}
-					<div className="mb-8 flex items-center justify-between gap-3 lg:hidden">
-						{filtersAvailable ? <ProductFiltersMobile facets={facets} /> : <span />}
-						<SortSelect options={sortOptions} />
-					</div>
-
-					{/* Desktop toolbar: inline sort links (filters live in the sidebar). */}
-					<div className="mb-8 hidden flex-wrap items-center gap-3 lg:flex">
-						<span className="text-sm text-muted-foreground">Sort by:</span>
-						<SortLinks options={sortOptions} />
-					</div>
-
-					<Suspense fallback={<ProductGridSkeleton />}>
-						<ProductSection searchParams={searchParams} />
-					</Suspense>
+			<div>
+				<div className="mb-8 flex items-center justify-between gap-3">
+					<SortSelect options={sortOptions} />
 				</div>
+
+				<div className="mb-8 hidden flex-wrap items-center gap-3 lg:flex">
+					<span className="text-sm text-muted-foreground">Sort by:</span>
+					<SortLinks options={sortOptions} />
+				</div>
+
+				<Suspense fallback={<ProductGridSkeleton />}>
+					<ProductSection searchParams={searchParams} />
+				</Suspense>
 			</div>
 		</div>
 	);

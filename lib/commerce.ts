@@ -55,6 +55,28 @@ const realCommerce = Commerce({
 	endpoint,
 });
 
+// ─── Lifestyle store configuration ────────────────────────────────────────
+
+const LIFESTYLE_CATEGORIES: Record<string, string> = {
+	"1": "Apparel",
+	"3": "Lifestyle",
+	"4": "Shoes",
+	"5": "Accessories",
+};
+
+const LIFESTYLE_ALLOWED = new Set(Object.keys(LIFESTYLE_CATEGORIES));
+
+function isSpamProduct(name: string): boolean {
+	const lower = name.toLowerCase();
+	// Filter out test/junk products
+	if (name.length < 5) return true;
+	if (lower.startsWith("new product")) return true;
+	if (lower.startsWith("new ")) return true;
+	if (/^\w+$/.test(lower) && name.length < 15) return true; // single-word gibberish
+	if (["phone", "phonerrrrrrrrr", "loliplo", "asdfasdf", "pindonga", "nuevo producto"].some(s => lower.includes(s))) return true;
+	return false;
+}
+
 // ─── Proxied commerce client ────────────────────────────────────────────
 
 const mockCommerce = {
@@ -83,6 +105,13 @@ const mockCommerce = {
 			search: searchQuery,
 			categoryId,
 		});
+		// Filter to lifestyle categories only and remove spam
+		result.data = result.data.filter((p: { category?: { id?: string } | null; name?: string }) => {
+			const catId = p.category?.id;
+			if (catId && !LIFESTYLE_ALLOWED.has(catId)) return false;
+			if (p.name && isSpamProduct(p.name)) return false;
+			return true;
+		});
 		// Commerce-kit uses meta.count, not meta.total
 		return { ...result, meta: { ...result.meta, count: result.meta.total } };
 	},
@@ -93,17 +122,21 @@ const mockCommerce = {
 
 	async productFilters() {
 		const { data: categories } = await fetchCategories();
+		const filtered = categories.filter((c) => LIFESTYLE_ALLOWED.has(c.id));
 		return {
 			priceBounds: { min: 0, max: 100000 },
 			variantTypes: [],
-			categories: categories.map((c) => ({ name: c.name, slug: c.slug })),
-			collections: categories.map((c) => ({ name: c.name, slug: c.slug })),
+			categories: filtered.map((c) => ({ name: LIFESTYLE_CATEGORIES[c.id] ?? c.name, slug: c.slug })),
+			collections: filtered.map((c) => ({ name: LIFESTYLE_CATEGORIES[c.id] ?? c.name, slug: c.slug })),
 			brands: [],
 		};
 	},
 
 	async collectionBrowse(params: { limit?: number }) {
 		const result = await fetchCollections();
+		result.data = result.data
+			.filter((c) => LIFESTYLE_ALLOWED.has(c.id))
+			.map((c) => ({ ...c, name: LIFESTYLE_CATEGORIES[c.id] ?? c.name }));
 		if (params.limit) {
 			result.data = result.data.slice(0, params.limit);
 		}
@@ -124,10 +157,12 @@ const mockCommerce = {
 
 	async categoriesBrowse(params: { active?: boolean; limit?: number }) {
 		const result = await fetchCategories();
+		result.data = result.data
+			.filter((c) => LIFESTYLE_ALLOWED.has(c.id))
+			.map((c) => ({ ...c, name: LIFESTYLE_CATEGORIES[c.id] ?? c.name }));
 		if (params.limit) {
 			result.data = result.data.slice(0, params.limit);
 		}
-		// Add parentId for compatibility with search page filtering
 		return {
 			data: result.data.map((c) => ({ ...c, parentId: undefined })),
 		};
