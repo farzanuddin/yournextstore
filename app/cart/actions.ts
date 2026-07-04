@@ -47,6 +47,7 @@ export async function setCartQuantity(variantId: string, quantity: number) {
 			quantity: Math.max(0, Math.min(Math.floor(Number(quantity) || 0), 99)),
 			mode: "set",
 		});
+		revalidatePath("/", "layout");
 		return { success: true, cart };
 	} catch {
 		return { success: false, cart: null };

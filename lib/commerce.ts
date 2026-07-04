@@ -93,8 +93,8 @@ const mockCommerce = {
 		}
 
 		const result = await fetchProducts({
-			offset: params.offset as number,
-			limit: params.limit as number,
+			offset: 0,
+			limit: 100, // fetch a large pool then filter down
 			search: searchQuery,
 			categoryId,
 		});
@@ -105,8 +105,12 @@ const mockCommerce = {
 			if (p.id && !ALLOWED_PRODUCT_IDS.has(Number(p.id))) return false;
 			return true;
 		});
-		// Commerce-kit uses meta.count, not meta.total
-		return { ...result, meta: { ...result.meta, count: result.meta.total } };
+		// Apply pagination after filtering
+		const offset = (params.offset as number) ?? 0;
+		const limit = (params.limit as number) ?? 12;
+		const total = result.data.length;
+		result.data = result.data.slice(offset, offset + limit);
+		return { ...result, meta: { ...result.meta, count: total } };
 	},
 
 	async search(params: { query: string; limit?: number; offset?: number }) {
@@ -206,18 +210,19 @@ const mockCommerce = {
 	},
 
 	async cartUpsert(params: { cartId?: string; variantId: string; quantity: number; mode?: "set" | "add" }) {
-		// Fetch product to get its data
-		const product = await fetchProduct(params.variantId.replace("v-", ""));
-		if (!product) return null;
-
 		const cart = getOrCreateCart(params.cartId);
-		const existing = cart.lineItems.find((i) => i.variantId === params.variantId);
 
-		// Remove item if quantity is 0
+		// Remove item if quantity is 0 — no need to fetch product
 		if (params.quantity <= 0) {
 			cart.lineItems = cart.lineItems.filter((i) => i.variantId !== params.variantId);
 			return cartToCommerceShape(cart);
 		}
+
+		// Fetch product to get its data
+		const product = await fetchProduct(params.variantId.replace("v-", ""));
+		if (!product) return null;
+
+		const existing = cart.lineItems.find((i) => i.variantId === params.variantId);
 
 		if (existing) {
 			existing.quantity = params.mode === "set" ? params.quantity : existing.quantity + params.quantity;

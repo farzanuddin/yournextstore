@@ -10,7 +10,7 @@ export function CartButton() {
 		<button
 			type="button"
 			onClick={openCart}
-			className="p-2 hover:bg-secondary rounded-full transition-colors relative"
+			className="p-2 hover:bg-secondary rounded-full transition-colors relative" style={{ cursor: "pointer" }}
 			aria-label="Shopping cart"
 		>
 			<ShoppingCart className="w-6 h-6" />

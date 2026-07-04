@@ -123,6 +123,7 @@ export function CartSidebar() {
 									type="button"
 									onClick={closeCart}
 									className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors"
+									style={{ cursor: "pointer" }}
 								>
 									Continue Shopping
 								</button>

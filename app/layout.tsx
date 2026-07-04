@@ -145,7 +145,7 @@ async function CartProviderWrapper({ children }: { children: React.ReactNode }) 
 								<Link
 									href="/login"
 									aria-label="User account"
-									className="p-2 hover:bg-secondary rounded-full transition-colors cursor-default"
+									className="p-2 hover:bg-secondary rounded-full transition-colors cursor-pointer"
 								>
 									<User className="w-6 h-6" />
 								</Link>

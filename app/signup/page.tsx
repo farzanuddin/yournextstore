@@ -43,7 +43,7 @@ export default function SignupPage() {
 	return (
 		<div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4">
 			<div className="w-full max-w-sm">
-				<div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+				<div className="rounded-xl border border-border bg-card p-6">
 					<div className="space-y-1.5">
 						<h1 className="text-xl font-semibold tracking-tight">Create an account</h1>
 						<p className="text-sm text-muted-foreground">Enter your details below to create your account</p>
