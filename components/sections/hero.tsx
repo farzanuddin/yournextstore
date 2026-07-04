@@ -7,9 +7,9 @@ export function Hero() {
 		<section className="py-4 sm:py-6 lg:py-8">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				{/* Desktop: banner with text overlay */}
-				<div className="hidden md:block relative w-full mx-auto aspect-2.5/1 lg:aspect-2/1 rounded-3xl overflow-hidden">
+				<div className="hidden md:block relative w-full mx-auto aspect-3/1 rounded-3xl overflow-hidden">
 					<Image
-						src="/hero.avif"
+						src="/hero-desktop.avif"
 						alt="Curated lifestyle products collection"
 						fill
 						className="object-cover"
@@ -57,7 +57,7 @@ export function Hero() {
 						</div>
 					</div>
 					<div className="relative w-full rounded-2xl overflow-hidden aspect-16/9 sm:aspect-2/1">
-						<Image src="/hero.avif" alt="Curated lifestyle products collection" fill className="object-cover" priority sizes="100vw" />
+						<Image src="/hero-mobile.avif" alt="Curated lifestyle products collection" fill className="object-cover" priority sizes="100vw" />
 					</div>
 				</div>
 			</div>

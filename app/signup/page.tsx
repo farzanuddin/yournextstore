@@ -89,7 +89,7 @@ export default function SignupPage() {
 							{errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
 						</div>
 
-						<Button type="submit" className="w-full">Sign Up</Button>
+						<Button type="submit" className="w-full rounded-full">Sign Up</Button>
 					</form>
 
 					<div className="mt-4 text-center text-sm text-muted-foreground">

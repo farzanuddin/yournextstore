@@ -76,7 +76,7 @@ export function CartSidebar() {
 							<p className="text-lg font-medium">Your cart is empty</p>
 							<p className="text-sm text-muted-foreground mt-1">Add some products to get started</p>
 						</div>
-						<Button variant="outline" onClick={closeCart}>
+						<Button variant="outline" onClick={closeCart} className="rounded-full">
 							Continue Shopping
 						</Button>
 					</div>

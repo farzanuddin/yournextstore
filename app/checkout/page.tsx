@@ -296,7 +296,7 @@ export default function CheckoutPage() {
 							<legend className="sr-only">Select payment method</legend>
 							{/* Card Option */}
 							<label
-								className={`flex items-center gap-3 rounded-lg border p-4 cursor-pointer transition-colors ${paymentMethod === "card" ? "border-foreground bg-secondary/30" : "border-border hover:border-muted-foreground/30"}`}
+								className={`flex items-center gap-3 rounded-xl border p-4 cursor-pointer transition-colors ${paymentMethod === "card" ? "border-foreground bg-secondary/30" : "border-border hover:border-muted-foreground/30"}`}
 							>
 								<input
 									type="radio"
@@ -358,7 +358,7 @@ export default function CheckoutPage() {
 
 							{/* Google Pay Option */}
 							<label
-								className={`flex items-center gap-3 rounded-lg border p-4 cursor-pointer transition-colors ${paymentMethod === "google-pay" ? "border-foreground bg-secondary/30" : "border-border hover:border-muted-foreground/30"}`}
+								className={`flex items-center gap-3 rounded-xl border p-4 cursor-pointer transition-colors ${paymentMethod === "google-pay" ? "border-foreground bg-secondary/30" : "border-border hover:border-muted-foreground/30"}`}
 							>
 								<input
 									type="radio"

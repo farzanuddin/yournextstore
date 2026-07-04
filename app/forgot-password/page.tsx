@@ -67,7 +67,7 @@ export default function ForgotPasswordPage() {
 								{error && <p className="text-sm text-red-500">{error}</p>}
 							</div>
 
-							<Button type="submit" className="w-full">Send reset link</Button>
+							<Button type="submit" className="w-full rounded-full">Send reset link</Button>
 
 							<div className="text-center">
 								<Link href="/login" className="inline-flex items-center gap-1 text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">

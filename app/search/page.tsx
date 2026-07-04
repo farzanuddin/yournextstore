@@ -51,9 +51,6 @@ async function SearchResults({ q }: { q: string }) {
 				<h2 className="mt-3 max-w-2xl text-3xl font-medium leading-[1.1] tracking-tight text-foreground sm:text-5xl">
 					Nothing matched &ldquo;{q}&rdquo;
 				</h2>
-				<p className="mt-6 max-w-md text-sm text-muted-foreground">
-					Try a shorter spelling, a broader term, or remove a filter.
-				</p>
 			</div>
 		);
 	}
